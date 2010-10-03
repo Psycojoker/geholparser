@@ -47,7 +47,8 @@ def convert_time(s):
     return d
 
 def parse_table(html):
-    '''parse html page and process the calendar table''' 
+    '''parse html page and process the calendar table
+    intermediate python structure (event list) is returned''' 
     soup = BeautifulSoup(html)
     tables = soup.html.body.findAll(name='table',recursive=False)
 #    jump to the calendar table    
@@ -75,9 +76,8 @@ def parse_table(html):
                 #compute end time (1 colspan=1/2 hour)
                 delta = timedelta(hours=event['duration']/2)
                 event['end'] = hours[current_time]+delta
-                
                 td = cell[0].tr.findAll(name='td',recursive=False)
-                # weeks
+                # Gehol weeks when the event occurs
                 event['weeks'] = split_weeks(td[0].contents[0].string)
                 # location
                 event['location'] = td[1].contents[0].string
@@ -90,19 +90,22 @@ def parse_table(html):
 #    now event are ready for export            
     return event_list
 
-def export_csv(head,events,filename):
-    '''export events into csv format e.g.
+def export_csv(head,events,filename,first_monday):
+    '''export events into csv format
+    the file is saved under filename (proper .csv extension is added automatically) 
+    Google calendar import format:
     Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private
     Final Exam,05/12/08,07:10:00 PM,05/12/08,10:00:00 PM,False,Two essay questions that will cover topics covered throughout the semester,"Columbia, Schermerhorn 614",True
+    first_monday corresponds to the monday date of week 1 in Gehol 
     '''
-    date_init = datetime.strptime('20/09/2010','%d/%m/%Y')
+    date_init = datetime.strptime(first_monday,'%d/%m/%Y')
     writer = csv.writer(open('%s.csv'%filename, 'w'), delimiter=',',quotechar='"', quoting=csv.QUOTE_MINIMAL)
     #write header line see google help http://www.google.com/support/calendar/bin/answer.py?answer=45656
     writer.writerow(['Subject','Start Date','Start Time','End Date','End Time','All Day Event','Description','Location','Private'])
     for event in events:
         for sub in event['weeks']:
             subject = '%s%s'%(head['mnemo'],event['type'])
-            #add offset corresponding to week numbers
+            #add offset corresponding to week numbers for each event repetition
             delta = timedelta(days=(sub-1)*7+(event['day']))
             start_date = (date_init+delta).strftime("%d/%m/%y")
             start_time = event['start'].strftime("%I:%M:%S %p")
@@ -114,23 +117,24 @@ def export_csv(head,events,filename):
             private = 'True'
             writer.writerow([subject,start_date,start_time,end_date,end_time,
                          all_day_event,description,location,private])
-   
+
+def test():
+    '''test import function for a mnemonic list'''
+    print 'import calendar test'
+    mnemo = ['INFOH500','BIMEH404','STATH400']
+    host = 'http://164.15.72.157:8080'
+    first_monday = '20/09/2010'
+    
+    for m in mnemo:
+        html = get_html(host,m)
+        head = parse_header(html)
+        print head
+        events = parse_table(html)
+        export_csv(head, events, 'agenda_%s'%m,first_monday)
+    
 if __name__ == '__main__':
     '''Import calendar directly from the ULB webserver and convert the calendar
     into a CVS file compatible with google calendar
     this version is used only with the "by course" calendars
     '''
-    print 'import calendar'
-    mnemo = 'INFOH500'
-#    mnemo = 'BIMEH404'
-#    mnemo = 'STATH400'
-    host = 'http://164.15.72.157:8080'
-    
-    html = get_html(host,mnemo)
-    head = parse_header(html)
-    print head
-    events = parse_table(html)
-    for e in events:
-        print e 
-    export_csv(head, events, 'agenda_%s'%mnemo)
-    
+    test()
