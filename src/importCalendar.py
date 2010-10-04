@@ -6,7 +6,7 @@ ULB Gehol to CSV calendar converter
 import urllib
 from BeautifulSoup import BeautifulSoup 
 import re
-import csv
+import csv, codecs, cStringIO
 from datetime import datetime, timedelta
 
 def get_html(host,mnemo):
@@ -80,7 +80,10 @@ def parse_table(html):
                 # Gehol weeks when the event occurs
                 event['weeks'] = split_weeks(td[0].contents[0].string)
                 # location
+                
                 event['location'] = td[1].contents[0].string
+                if event['location'] is None:
+                    event['location'] = ''
                 # activity
                 event['type'] = cell[1].tr.td.contents[0].string
                 current_time = current_time + event['duration'] 
@@ -89,6 +92,35 @@ def parse_table(html):
                 current_time = current_time + 1
 #    now event are ready for export            
     return event_list
+
+class UnicodeWriter:
+    """
+    A CSV writer which will write rows to CSV file "f",
+    which is encoded in the given encoding.
+    """
+
+    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
+        # Redirect output to a queue
+        self.queue = cStringIO.StringIO()
+        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
+        self.stream = f
+        self.encoder = codecs.getincrementalencoder(encoding)()
+
+    def writerow(self, row):
+        self.writer.writerow([s.encode("utf-8") for s in row])
+        # Fetch UTF-8 output from the queue ...
+        data = self.queue.getvalue()
+        data = data.decode("utf-8")
+        # ... and reencode it into the target encoding
+        data = self.encoder.encode(data)
+        # write to the target stream
+        self.stream.write(data)
+        # empty queue
+        self.queue.truncate(0)
+
+    def writerows(self, rows):
+        for row in rows:
+            self.writerow(row)
 
 def export_csv(head,events,filename,first_monday):
     '''export events into csv format
@@ -99,7 +131,7 @@ def export_csv(head,events,filename,first_monday):
     first_monday corresponds to the monday date of week 1 in Gehol 
     '''
     date_init = datetime.strptime(first_monday,'%d/%m/%Y')
-    writer = csv.writer(open('%s.csv'%filename, 'w'), delimiter=',',quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    writer = UnicodeWriter(open('%s.csv'%filename, 'w'), delimiter=',',quotechar='"', quoting=csv.QUOTE_MINIMAL)
     #write header line see google help http://www.google.com/support/calendar/bin/answer.py?answer=45656
     writer.writerow(['Subject','Start Date','Start Time','End Date','End Time','All Day Event','Description','Location','Private'])
     for event in events:
