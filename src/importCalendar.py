@@ -3,8 +3,9 @@ Created on Oct 2, 2010
 ULB Gehol to CSV calendar converter 
 @author: epd
 '''
+import argparse
 import urllib
-from BeautifulSoup import BeautifulSoup 
+from BeautifulSoup import BeautifulSoup
 import re
 import csv, codecs, cStringIO
 from datetime import datetime, timedelta
@@ -32,7 +33,7 @@ def split_weeks(weeks):
 def parse_header(html):
     '''parse html page to find global informations''' 
     soup = BeautifulSoup(html)
-#    process names ...
+    #process names ...
     bTag = soup.find('td',text=re.compile('Horaire'))
     head = {}
     head['mnemo'] = bTag.split(':')[1].split('-')[0].lstrip()
@@ -51,15 +52,15 @@ def parse_table(html):
     intermediate python structure (event list) is returned''' 
     soup = BeautifulSoup(html)
     tables = soup.html.body.findAll(name='table',recursive=False)
-#    jump to the calendar table    
+    #jump to the calendar table    
     cal = tables[1]
     lines = cal.findAll(name='tr',recursive=False)
-#    isolate first tab line with hours
+    #isolate first tab line with hours
     hours_line = lines[0].findAll(name='td',recursive=False)
     hours = []
     for h in hours_line[1:]:
         hours.append(convert_time(h.string))
-#    process all lines
+    #process all lines
     event_list = []
     for (day,line) in enumerate(lines[1:]):
         slots = line.findAll(name='td',recursive=False)
@@ -90,7 +91,7 @@ def parse_table(html):
                 event_list.append(event)
             else:
                 current_time = current_time + 1
-#    now event are ready for export            
+    #now event are ready for export            
     return event_list
 
 class UnicodeWriter:
@@ -124,14 +125,14 @@ class UnicodeWriter:
 
 def export_csv(head,events,filename,first_monday):
     '''export events into csv format
-    the file is saved under filename (proper .csv extension is added automatically) 
+    the file is saved under filename .csv extension must be provided 
     Google calendar import format:
     Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private
     Final Exam,05/12/08,07:10:00 PM,05/12/08,10:00:00 PM,False,Two essay questions that will cover topics covered throughout the semester,"Columbia, Schermerhorn 614",True
     first_monday corresponds to the monday date of week 1 in Gehol 
     '''
     date_init = datetime.strptime(first_monday,'%d/%m/%Y')
-    writer = UnicodeWriter(open('%s.csv'%filename, 'w'), delimiter=',',quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    writer = UnicodeWriter(open(filename, 'w'), delimiter=',',quotechar='"', quoting=csv.QUOTE_MINIMAL)
     #write header line see google help http://www.google.com/support/calendar/bin/answer.py?answer=45656
     writer.writerow(['Subject','Start Date','Start Time','End Date','End Time','All Day Event','Description','Location','Private'])
     for event in events:
@@ -152,21 +153,47 @@ def export_csv(head,events,filename,first_monday):
 
 def test():
     '''test import function for a mnemonic list'''
-    print 'import calendar test'
+    print 'import calendar test --> csv files'
     mnemo = ['INFOH500','BIMEH404','STATH400']
     host = 'http://164.15.72.157:8080'
     first_monday = '20/09/2010'
     
     for m in mnemo:
-        html = get_html(host,m)
-        head = parse_header(html)
-        print head
-        events = parse_table(html)
-        export_csv(head, events, 'agenda_%s'%m,first_monday)
+        dest_filename = 'agenda_%s.csv'%m
+        process(m, host, first_monday, dest_filename)
+        print dest_filename
+
+def process(mnemo,host,first_monday,dest_filename):    
+    html = get_html(host,mnemo)    
+    head = parse_header(html)
+    events = parse_table(html)
+    export_csv(head, events, dest_filename,first_monday)
     
 if __name__ == '__main__':
     '''Import calendar directly from the ULB webserver and convert the calendar
     into a CVS file compatible with google calendar
     this version is used only with the "by course" calendars
     '''
-    test()
+    parser = argparse.ArgumentParser(description='Fetch Gehol calendar from the ULB web page and generate a csv file compatible with google calendar.',
+                                     epilog="THIS PROGRAM IS GIVEN AS THIS WITHOUT ANY GARANTEE")
+    #positional argument
+    parser.add_argument('mnemo', nargs='?', default=None)
+    #optional arguments
+    parser.add_argument('-s','--server', required=False, help='server address [http://164.15.72.157:8080]',default = 'http://164.15.72.157:8080')
+    parser.add_argument('-d', required=False, help='Monday date of the week 1 [20/09/2010]',default = '20/09/2010')
+    parser.add_argument('-t','--test', required=False, action='store_true',help='test the program on some courses',default = False)
+    
+    args = parser.parse_args()
+    if args.test:
+        test()
+    else:
+        if args.mnemo is None:
+            parser.print_help()
+        else:
+            dest_filename = 'agenda_%s.csv'%args.mnemo
+            try:
+                process(args.mnemo, args.server, args.d, dest_filename)
+            except:
+                print 'problem encountered with \n%s\nNothing saved.'%args
+            else:
+                print '%s saved'%dest_filename            
