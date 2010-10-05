@@ -136,8 +136,9 @@ def export_csv(head,events,filename,first_monday):
     #write header line see google help http://www.google.com/support/calendar/bin/answer.py?answer=45656
     writer.writerow(['Subject','Start Date','Start Time','End Date','End Time','All Day Event','Description','Location','Private'])
     for event in events:
-        for sub in event['weeks']:
-            subject = '%s%s'%(head['mnemo'],event['type'])
+        n = len(event['weeks'])
+        for (i,sub) in enumerate(event['weeks']):
+            subject = '%s%s (%d/%d)'%(head['mnemo'],event['type'],i+1,n)
             #add offset corresponding to week numbers for each event repetition
             delta = timedelta(days=(sub-1)*7+(event['day']))
             start_date = (date_init+delta).strftime("%d/%m/%y")
@@ -147,7 +148,7 @@ def export_csv(head,events,filename,first_monday):
             all_day_event = 'False'
             description = head['title']+' titulaire : '+ head['tutor']
             location = event['location']
-            private = 'True'
+            private = 'False'
             writer.writerow([subject,start_date,start_time,end_date,end_time,
                          all_day_event,description,location,private])
 
