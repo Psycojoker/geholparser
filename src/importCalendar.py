@@ -12,10 +12,13 @@ from datetime import datetime, timedelta
 
 def get_html(host,mnemo):
     '''get the html page from the web'''
-    params = urllib.urlencode({'template': 'cours', 'weeks': '1-31', 'days': '1-6', 'periods':'5-29', 'width':0,'height':0})
-    url = '%s/Reporting/Individual;Courses;name;%s?%s'%(host,mnemo,params)
-    f = urllib.urlopen(url)
-    return f.read()
+    try:
+        params = urllib.urlencode({'template': 'cours', 'weeks': '1-31', 'days': '1-6', 'periods':'5-29', 'width':0,'height':0})
+        url = '%s/Reporting/Individual;Courses;name;%s?%s'%(host,mnemo,params)
+        f = urllib.urlopen(url)
+        return f.read()
+    except:
+        raise ValueError('Could not get html')
 
 def split_weeks(weeks):
     '''split string containing weeks info into separated fields
@@ -31,16 +34,19 @@ def split_weeks(weeks):
     return w
 
 def parse_header(html):
-    '''parse html page to find global informations''' 
-    soup = BeautifulSoup(html)
-    #process names ...
-    bTag = soup.find('td',text=re.compile('Horaire'))
-    head = {}
-    head['mnemo'] = bTag.split(':')[1].split('-')[0].lstrip()
-    head['title'] = bTag.split(':')[1].split('-')[1].lstrip()
-    bTag = soup.find('td',text=re.compile('Titulaire'))
-    head['tutor'] = bTag.split(':')[1].lstrip()
-    return head
+    '''parse html page to find global informations'''
+    try: 
+        soup = BeautifulSoup(html)
+        #process names ...
+        bTag = soup.find('td',text=re.compile('Horaire'))
+        head = {}
+        head['mnemo'] = bTag.split(':')[1].split('-')[0].lstrip()
+        head['title'] = bTag.split(':')[1].split('-')[1].lstrip()
+        bTag = soup.find('td',text=re.compile('Titulaire'))
+        head['tutor'] = bTag.split(':')[1].lstrip()
+        return head
+    except:
+        raise ValueError('Could not parse html')
 
 def convert_time(s):
     '''convert string time into datetime struct'''
@@ -209,9 +215,12 @@ if __name__ == '__main__':
             parser.print_help()
         else:
             dest_filename = 'agenda_%s.csv'%args.mnemo
-#            try:
-            process(args.mnemo, args.server, args.d, dest_filename)
-#            except:
-#                print 'problem encountered with \n%s\nNothing saved.'%args
-#            else:
-            print '%s saved'%dest_filename            
+            try:
+                process(args.mnemo, args.server, args.d, dest_filename)
+            except Exception as inst:
+                print 'problem encountered with \n%s\nNothing saved.\n'%args
+                print type(inst)     # the exception instance
+                print inst.args      # arguments stored in .args
+                print inst           # __str__ allows args to printed directly                
+            else:
+                print '%s saved\n'%dest_filename            
