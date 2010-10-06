@@ -61,27 +61,44 @@ def parse_table(html):
     for h in hours_line[1:]:
         hours.append(convert_time(h.string))
     #process all lines
-    event_list = []
-    for (day,line) in enumerate(lines[1:]):
+    #search the number of row for that day
+    n_rows = []
+    for (no_line,line) in enumerate(lines[1:]):
         slots = line.findAll(name='td',recursive=False)
-        current_time = -1
+        #search the number of row for that day
+        if slots[0].has_key('rowspan'):
+            n_rows.append(int(slots[0]['rowspan']))
+        else: 
+            n_rows.append(0)
+    event_list = []
+    day = -1
+    n = 0
+    for (no_line,line) in enumerate(lines[1:]):
+        if n==0:
+            n = n_rows[no_line]
+            day = day + 1
+            current_time = -1
+        else:
+            current_time = 0
+        n = n-1        
+        slots = line.findAll(name='td',recursive=False)
         for s in slots:
             cell = s.findAll(name='table',recursive=False)
             # event found
             if len(cell)>1:
                 event = {}
+                event['no_line'] = no_line
                 event['day'] = day
                 event['start'] = hours[current_time]
                 #duration in hours is extract from the colspan 
-                event['duration'] = (int(s['colspan']))
+                event['duration'] = int(s['colspan'])
                 #compute end time (1 colspan=1/2 hour)
                 delta = timedelta(hours=event['duration']/2)
                 event['end'] = hours[current_time]+delta
                 td = cell[0].tr.findAll(name='td',recursive=False)
                 # Gehol weeks when the event occurs
                 event['weeks'] = split_weeks(td[0].contents[0].string)
-                # location
-                
+                # location                
                 event['location'] = td[1].contents[0].string
                 if event['location'] is None:
                     event['location'] = ''
@@ -90,7 +107,7 @@ def parse_table(html):
                 current_time = current_time + event['duration'] 
                 event_list.append(event)
             else:
-                current_time = current_time + 1
+                current_time = current_time + 1        
     #now event are ready for export            
     return event_list
 
@@ -132,7 +149,7 @@ def export_csv(head,events,filename,first_monday):
     first_monday corresponds to the monday date of week 1 in Gehol 
     '''
     date_init = datetime.strptime(first_monday,'%d/%m/%Y')
-    writer = UnicodeWriter(open(filename, 'w'), delimiter=',',quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    writer = UnicodeWriter(open(filename, 'w'), delimiter=',',quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
     #write header line see google help http://www.google.com/support/calendar/bin/answer.py?answer=45656
     writer.writerow(['Subject','Start Date','Start Time','End Date','End Time','All Day Event','Description','Location','Private'])
     for event in events:
@@ -192,9 +209,9 @@ if __name__ == '__main__':
             parser.print_help()
         else:
             dest_filename = 'agenda_%s.csv'%args.mnemo
-            try:
-                process(args.mnemo, args.server, args.d, dest_filename)
-            except:
-                print 'problem encountered with \n%s\nNothing saved.'%args
-            else:
-                print '%s saved'%dest_filename            
+#            try:
+            process(args.mnemo, args.server, args.d, dest_filename)
+#            except:
+#                print 'problem encountered with \n%s\nNothing saved.'%args
+#            else:
+            print '%s saved'%dest_filename            
