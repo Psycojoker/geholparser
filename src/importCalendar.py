@@ -20,6 +20,14 @@ def get_html(host,mnemo):
     except:
         raise ValueError('Could not get html')
 
+def get_html_by_url(url):
+    '''get the html page from the web for a specific student'''
+    try:
+        f = urllib.urlopen(url)
+        return f.read()
+    except:
+        raise ValueError('Could not get html')
+
 def split_weeks(weeks):
     '''split string containing weeks info into separated fields
     e.g. "1,5-7"  ---> [1,5,6,7]'''
@@ -35,6 +43,7 @@ def split_weeks(weeks):
 
 def parse_header(html):
     '''parse html page to find global informations'''
+    #try individual course
     try: 
         soup = BeautifulSoup(html)
         #process names ...
@@ -44,9 +53,16 @@ def parse_header(html):
         head['title'] = bTag.split(':')[1].split('-')[1].lstrip()
         bTag = soup.find('td',text=re.compile('Titulaire'))
         head['tutor'] = bTag.split(':')[1].lstrip()
+        head['type'] = 'course'
         return head
     except:
-        raise ValueError('Could not parse html')
+        #try idividual student
+        head = {}
+        head['mnemo'] = ''
+        head['title'] = ''
+        head['tutor'] = ''
+        head['type'] = 'student'
+        return head
 
 def convert_time(s):
     '''convert string time into datetime struct'''
@@ -187,11 +203,24 @@ def test():
         process(m, host, first_monday, dest_filename)
         print dest_filename
 
+    #test by url
+    url = 'http://164.15.72.157:8080/Reporting/Individual;Student%20Set%20Groups;id;%23SPLUSA629A0?&template=Ann%E9e%20d%27%E9tude&weeks=1-14&days=1-6&periods=5-33&width=0&height=0'
+    dest_filename = 'import_by_url.csv'
+    process_by_url(url, first_monday, dest_filename)
+    
+
 def process(mnemo,host,first_monday,dest_filename):    
     html = get_html(host,mnemo)    
     head = parse_header(html)
     events = parse_table(html)
     export_csv(head, events, dest_filename,first_monday)
+
+def process_by_url(url,first_monday,dest_filename):    
+    html = get_html_by_url(url)    
+    head = parse_header(html)
+    events = parse_table(html)
+    export_csv(head, events, dest_filename,first_monday)
+
     
 if __name__ == '__main__':
     '''Import calendar directly from the ULB webserver and convert the calendar
