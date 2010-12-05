@@ -1,20 +1,34 @@
 import argparse
-from importCalendar import process
+from importCalendar import get_html, parse_header, parse_table
+    
+def process(mnemo,host,first_monday,dest_filename):    
+    html = get_html(host,mnemo)    
+    head = parse_header(html)
+    events = parse_table(html)
+    export_csv(head, events, dest_filename,first_monday)
+
+    
+def process_by_url(url,first_monday,dest_filename):    
+    html = get_html_by_url(url)    
+    head = parse_header(html)
+    events = parse_table(html)
+    export_csv(head, events, dest_filename,first_monday)
+
 
 def test():
     '''test import function for a mnemonic list'''
     print 'import calendar test --> csv files'
     mnemo = ['INFOH500','BIMEH404','STATH400']
-    host = 'http://164.15.72.157:8080'
+    host = 'http://164.15.72.157'
     first_monday = '20/09/2010'
     
     for m in mnemo:
-        dest_filename = 'agenda_%s.csv'%m
+        dest_filename = 'agenda_%s.csv' % m
         process(m, host, first_monday, dest_filename)
         print dest_filename
 
     #test by url
-    url = 'http://164.15.72.157:8080/Reporting/Individual;Student%20Set%20Groups;id;%23SPLUSA629A0?&template=Ann%E9e%20d%27%E9tude&weeks=1-14&days=1-6&periods=5-33&width=0&height=0'
+    url = '%s/Reporting/Individual;Student%20Set%20Groups;id;%23SPLUSA629A0?&template=Ann%E9e%20d%27%E9tude&weeks=1-14&days=1-6&periods=5-33&width=0&height=0' % host
     dest_filename = 'import_by_url.csv'
     process_by_url(url, first_monday, dest_filename)
 
@@ -35,7 +49,7 @@ if __name__ == '__main__':
                         default = 'http://164.15.72.157:8080')
 
     parser.add_argument('-d', required=False,
-                        help='Monday date of the week 1 [20/09/2010]',
+                        help='Monday date in the week 1 [20/09/2010]',
                         default = '20/09/2010')
     
     parser.add_argument('-t','--test', required=False,
