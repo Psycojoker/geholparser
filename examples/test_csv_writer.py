@@ -1,8 +1,8 @@
 import sys
 sys.path.append("../src")
 
-from coursecalendar import CourseCalendar
-from csvwriter import export_csv
+from gehol.coursecalendar import CourseCalendar
+from gehol.csvwriter import export_csv
 
 
 if __name__=="__main__":

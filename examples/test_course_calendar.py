@@ -1,7 +1,7 @@
 import sys
 sys.path.append('../src')
 
-from coursecalendar import CourseCalendar
+from gehol.coursecalendar import CourseCalendar
 
 
 if __name__=="__main__":

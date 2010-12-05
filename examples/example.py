@@ -5,8 +5,8 @@ sys.path.append('../src')
 
 import argparse
 
-from importCalendar import get_html, get_html_by_url, parse_header, parse_table
-from csvwriter import export_csv
+from gehol.importCalendar import get_html, get_html_by_url, parse_header, parse_table
+from gehol.csvwriter import export_csv
 
 def process(mnemo,host,first_monday,dest_filename):    
     html = get_html(host,mnemo)    
