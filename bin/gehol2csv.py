@@ -33,6 +33,8 @@ def main():
         dest_filename = 'agenda_%s.csv' % args.mnemo
         try:
             cal = CourseCalendar(args.server, args.mnemo)
+            cal.load_events()
+            print 'Saving %s (%d events) to %s' % (args.mnemo, len(cal.events), dest_filename )
             export_csv(cal.metadata, cal.events, dest_filename, args.d)
 
         except Exception, inst:
@@ -41,7 +43,7 @@ def main():
             print inst.args      # arguments stored in .args
             print inst           # __str__ allows args to printed directly
         else:
-            print '%s saved\n' % dest_filename
+            print 'done'
 
 
 if __name__ == '__main__':
