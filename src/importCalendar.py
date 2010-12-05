@@ -12,11 +12,13 @@ from datetime import datetime, timedelta
 
 from BeautifulSoup import BeautifulSoup
 
+
 def get_html(host,mnemo):
     '''get the html page from the web'''
     try:
         params = urllib.urlencode({'template': 'cours', 'weeks': '1-31', 'days': '1-6', 'periods':'5-29', 'width':0,'height':0})
         url = '%s/Reporting/Individual;Courses;name;%s?%s'%(host,mnemo,params)
+        print "Getting content from built url : %s" % url
         f = urllib.urlopen(url)
         return f.read()
     except:
@@ -25,6 +27,7 @@ def get_html(host,mnemo):
 def get_html_by_url(url):
     '''get the html page from the web for a specific student'''
     try:
+        print "Getting content from supplied url : %s" % url
         f = urllib.urlopen(url)
         return f.read()
     except:
