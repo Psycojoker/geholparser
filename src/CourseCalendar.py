@@ -1,10 +1,7 @@
 import urllib
 import re
-
 from datetime import datetime, timedelta
-
 from BeautifulSoup import BeautifulSoup
-
 from utils import split_weeks, convert_time
 
 
@@ -14,6 +11,7 @@ class CourseCalendar(object):
         self.host = host
         self.mnemo = mnemo
         self.events = []
+        self.url = self._build_query_url()
 
 
     def load_events(self):
@@ -21,9 +19,6 @@ class CourseCalendar(object):
         header = self._extract_header(html_content)
         self.events = self._extract_table(html_content)
 
-
-    def get_events(self):
-        return self.events
 
 
     def _build_query_url(self):
@@ -35,9 +30,8 @@ class CourseCalendar(object):
 
 
     def _get_html_content(self):
-        url = self._build_query_url()
         try:
-            html_page = urllib.urlopen(url)
+            html_page = urllib.urlopen(self.url)
             html_content = html_page.read()
             return html_content
         except:
