@@ -1,7 +1,8 @@
 '''
 Created on Oct 2, 2010
 ULB Gehol to CSV calendar converter 
-@author: epd
+@author: odebeir
+@url: http://bitbucket.org/odebeir/ulbcalendar2cvs
 '''
 
 import urllib
