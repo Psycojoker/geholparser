@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import sys
+sys.path.append('../src')
+
 import argparse
 
 from importCalendar import get_html, get_html_by_url, parse_header, parse_table
