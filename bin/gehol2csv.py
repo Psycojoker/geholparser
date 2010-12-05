@@ -32,8 +32,8 @@ def main():
     else:
         dest_filename = 'agenda_%s.csv' % args.mnemo
         try:
-            cal = CourseCalendar(args.server)
-            export_csv(cal.metadata, cal.events, args.d, dest_filename)
+            cal = CourseCalendar(args.server, args.mnemo)
+            export_csv(cal.metadata, cal.events, dest_filename, args.d)
 
         except Exception, inst:
             print 'problem encountered with \n%s\nNothing saved.\n' % args
