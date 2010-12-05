@@ -12,11 +12,12 @@ class CourseCalendar(object):
         self.mnemo = mnemo
         self.events = []
         self.url = self._build_query_url()
+        self.metadata = {}
 
 
     def load_events(self):
         html_content = self._get_html_content()
-        header = self._extract_header(html_content)
+        self.metadata = self._extract_header(html_content)
         self.events = self._extract_table(html_content)
 
 

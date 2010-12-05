@@ -11,3 +11,4 @@ if __name__=="__main__":
     calendar.load_events()
     pprint(calendar.events)
     print len(calendar.events)
+    print calendar.metadata
