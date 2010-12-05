@@ -18,3 +18,20 @@ External Dependencies
 - `BeautifulSoup <http://www.crummy.com/software/BeautifulSoup/>`_
 - `argparse <http://pypi.python.org/pypi/argparse/1.1>`_
 
+
+
+
+Roadmap
+-------
+
+Required for stable
+*******************
+
+- Support more gehol reports, not just the per-course view
+- Documentation
+
+
+Maybe
+*****
+
+- Export to ``.ics`` file format (using  `iCalendar <http://codespeak.net/icalendar/>`_)
