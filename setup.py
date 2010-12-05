@@ -7,8 +7,16 @@ import gehol
 setup(name='gehol',
       package_dir={'': 'src'},
       packages=['gehol'],
+      scripts=['bin/gehol2csv.py'],
       version=gehol.__version__,
+      
       #PyPI metadata
       url=['http://bitbucket.org/odebeir/ulbcalendar2cvs'],
       keywords=['calendar csv'],
-      platforms='All')
+      platforms='All',
+      classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Environment :: Console",
+        "Programming Language :: Python",
+        "Topic :: Software Development",
+        "Topic :: Utilities"])
