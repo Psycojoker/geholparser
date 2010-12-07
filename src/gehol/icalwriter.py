@@ -20,21 +20,17 @@ def export_ical(head,events,filename,first_monday):
             summary = '%s%s (%d/%d)'%(head['mnemo'],event['type'],i+1,n)
             #add offset corresponding to week numbers for each event repetition
             delta = timedelta(days=(sub-1)*7+(event['day']))
-            dtstart = date_init+delta
-#            start_date = (date_init+delta).strftime("%d/%m/%y")
-#            start_time = event['start'].strftime("%I:%M:%S %p")
-#            end_date = start_date
-#            end_time = event['end'].strftime("%I:%M:%S %p")
-#            all_day_event = 'False'
-            organizer = head['title']+' titulaire : '+ head['tutor']
+            dtstart = date_init+delta + timedelta(hours = event['start'].hour, minutes = event['start'].minute)
+            dtend = date_init+delta + timedelta(hours = event['end'].hour, minutes = event['end'].minute)
 
+            organizer = head['title']+' titulaire : '+ head['tutor']
             location = event['location']
-#            private = 'False'
 
             cal_event = Event()
 
             cal_event.add('summary', summary)
             cal_event.add('dtstart', dtstart)
+            cal_event.add('dtend', dtend)
             cal_event['location'] = vText(location)
             cal_event['organizer'] = vText(organizer)
 
