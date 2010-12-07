@@ -2,7 +2,7 @@ import sys
 sys.path.append("../src")
 
 from gehol.coursecalendar import CourseCalendar
-from gehol.csvwriter import export_csv
+from gehol.csvwriter import export_csv, to_csv
 
 
 if __name__=="__main__":
@@ -16,6 +16,6 @@ if __name__=="__main__":
         print "Saving %s events to %s" % (course, dest_filename)
         cal = CourseCalendar(host, course)
         cal.load_events()
+        csv_string = to_csv(cal.metadata, cal.events, first_monday)
+        print csv_string
         export_csv(cal.metadata, cal.events, dest_filename, first_monday)
-
-

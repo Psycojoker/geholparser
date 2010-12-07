@@ -1,6 +1,12 @@
 import csv, codecs, cStringIO
 from datetime import datetime, timedelta
 
+class Buffer(object):
+    """Buufer claas enable to write result of the CSV class to a in memory string"""
+    def __init__(self):
+        self.data = ''
+    def write(self,s):
+        self.data = self.data + s
 
 class UnicodeWriter:
     """
@@ -31,7 +37,7 @@ class UnicodeWriter:
         for row in rows:
             self.writerow(row)
 
-def export_csv(head,events,filename,first_monday):
+def to_csv(head,events,first_monday):
     '''export events into csv format
     the file is saved under filename .csv extension must be provided 
     Google calendar import format:
@@ -40,7 +46,8 @@ def export_csv(head,events,filename,first_monday):
     first_monday corresponds to the monday date of week 1 in Gehol 
     '''
     date_init = datetime.strptime(first_monday,'%d/%m/%Y')
-    writer = UnicodeWriter(open(filename, 'w'), delimiter=',',quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+    buffer = Buffer()
+    writer = UnicodeWriter(buffer, delimiter=',',quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
     #write header line see google help http://www.google.com/support/calendar/bin/answer.py?answer=45656
     writer.writerow(['Subject','Start Date','Start Time','End Date','End Time','All Day Event','Description','Location','Private'])
     for event in events:
@@ -60,3 +67,9 @@ def export_csv(head,events,filename,first_monday):
             writer.writerow([subject,start_date,start_time,end_date,end_time,
                          all_day_event,description,location,private])
 
+    return buffer.data
+
+def export_csv(head,events,dest_filename, first_monday):
+    csv_string = to_csv(head,events,first_monday)
+    fd = open(dest_filename,'w')
+    fd.write(csv_string)

@@ -12,7 +12,7 @@ def process(mnemo,host,first_monday,dest_filename):
     html = get_html(host,mnemo)    
     head = parse_header(html)
     events = parse_table(html)
-    export_csv(head, events, dest_filename,first_monday)
+    export_csv(head, events, dest_filename, first_monday)
 
     
 def process_by_url(url,first_monday,dest_filename):    
