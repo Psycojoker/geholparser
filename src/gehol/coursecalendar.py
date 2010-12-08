@@ -7,20 +7,25 @@ from utils import split_weeks, convert_time
 
 class CourseCalendar(object):
     '''Loads events for a given course'''
+    ERR_COURSE_NOT_FOUND = 100
+    
     def __init__(self, host, mnemo):
         self.host = host
         self.mnemo = mnemo
         self.events = []
         self.url = self._build_query_url()
         self.metadata = {}
-
+        self.err = False
+        self.err_type = 0
 
     def load_events(self):
         html_content = self._get_html_content()
-        self.metadata = self._extract_header(html_content)
-        self.events = self._extract_table(html_content)
-
-
+        try:
+            self.metadata = self._extract_header(html_content)
+            self.events = self._extract_table(html_content)
+        except AttributeError:
+            self._guess_query_error(html_content)
+            
 
     def _build_query_url(self):
         params = urllib.urlencode({'template': 'cours', 'weeks': '1-31',
@@ -116,4 +121,21 @@ class CourseCalendar(object):
         #now event are ready for export
         return event_list
 
+    
+    def _guess_query_error(self, html_content):
+        if self._find_error_400(html_content):
+            self.err = True
+            self.err_type = CourseCalendar.ERR_COURSE_NOT_FOUND
+            return True
+        return False
 
+    
+    def _find_error_400(self, html_content):
+        soup = BeautifulSoup(html_content)
+        error_header = soup.findAll(name="h1")
+        if error_header:
+            h1_tag = error_header[0]
+            return h1_tag.contents[0] == u'400  Bad Request'
+        return False
+
+    
