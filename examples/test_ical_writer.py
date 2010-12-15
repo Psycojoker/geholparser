@@ -2,7 +2,7 @@ import sys
 sys.path.append("../src")
 
 from gehol.coursecalendar import CourseCalendar
-from gehol.icalwriter import export_ical
+from gehol.converters.icalwriter import export_ical
 
 
 if __name__=="__main__":
