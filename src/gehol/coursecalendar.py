@@ -1,9 +1,9 @@
 import urllib
+import httplib
 import re
 from datetime import datetime, timedelta
 from BeautifulSoup import BeautifulSoup
 from utils import split_weeks, convert_time
-
 
 class CourseCalendar(object):
     '''Loads events for a given course'''
@@ -31,18 +31,28 @@ class CourseCalendar(object):
         params = urllib.urlencode({'template': 'cours', 'weeks': '1-31',
                                    'days': '1-6', 'periods':'5-29',
                                    'width':0,'height':0})
-        url = '%s/Reporting/Individual;Courses;name;%s?%s'%(self.host, self.mnemo, params)
+        url = '/Reporting/Individual;Courses;name;%s?%s'%(self.mnemo, params)
         return url
-
 
     def _get_html_content(self):
         try:
-            html_page = urllib.urlopen(self.url)
-            html_content = html_page.read()
+            headers = {"Content-type": "application/x-www-form-urlencoded","Accept": "text/plain"}
+            conn = httplib.HTTPConnection(self.host)
+
+            print self.host
+
+            conn.request("GET", self.url, headers = headers)
+            response = conn.getresponse()
+
+            print response.status, response.reason
+            html_content = response.read()
+
+            print html_content
+            conn.close()
             return html_content
         except:
             raise ValueError('Could not get html content for course : %s' % self.mnemo)
-    
+
 
     def _extract_header(self, html):
         '''parse html page to find global informations'''
