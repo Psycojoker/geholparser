@@ -37,7 +37,7 @@ class UnicodeWriter:
         for row in rows:
             self.writerow(row)
 
-def to_csv(head,events,first_monday):
+def to_csv(head, events, first_monday):
     '''export events into csv format
     the file is saved under filename .csv extension must be provided 
     Google calendar import format:
@@ -45,6 +45,7 @@ def to_csv(head,events,first_monday):
     Final Exam,05/12/08,07:10:00 PM,05/12/08,10:00:00 PM,False,Two essay questions that will cover topics covered throughout the semester,"Columbia, Schermerhorn 614",True
     first_monday corresponds to the monday date of week 1 in Gehol 
     '''
+    
     date_init = datetime.strptime(first_monday,'%d/%m/%Y')
     buffer = Buffer()
     writer = UnicodeWriter(buffer, delimiter=',',quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
