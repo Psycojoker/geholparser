@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
 import argparse
-from gehol.coursecalendar import CourseCalendar
-from gehol.csvwriter import export_csv
-
+from gehol import GeholProxy
+from gehol.converters.csvwriter import export_csv
 
 def main():
     '''Import calendar directly from the ULB webserver and convert the calendar
@@ -32,8 +31,8 @@ def main():
     else:
         dest_filename = 'agenda_%s.csv' % args.mnemo
         try:
-            cal = CourseCalendar(args.server, args.mnemo)
-            cal.load_events()
+            gehol_proxy = GeholProxy(args.server)
+            cal =  gehol_proxy.get_course_calendar(args.mnemo)
             print 'Saving %s (%d events) to %s' % (args.mnemo, len(cal.events), dest_filename )
             export_csv(cal.metadata, cal.events, dest_filename, args.d)
 
