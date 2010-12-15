@@ -6,7 +6,7 @@ import gehol
 
 setup(name='gehol',
       package_dir={'': 'src'},
-      packages=['gehol'],
+      packages=['gehol', 'gehol.converters'],
       scripts=['bin/gehol2csv.py'],
       version=gehol.__version__,
       
