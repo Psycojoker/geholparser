@@ -1,56 +1,58 @@
-import urllib
 import re
 from datetime import datetime, timedelta
 from BeautifulSoup import BeautifulSoup
 from utils import split_weeks, convert_time
 
+class CourseNotFoundException(Exception):
+    pass
+
+class UnknowErrorException(Exception):
+    pass
+
 
 class CourseCalendar(object):
     '''Loads events for a given course'''
-    ERR_COURSE_NOT_FOUND = 100
-    
-    def __init__(self, host, mnemo):
-        self.host = host
-        self.mnemo = mnemo
+
+    def __init__(self, markup):
+        if self._is_file_type_object(markup):
+            markup = markup.read()
+        self.html_content = markup
         self.events = []
-        self.url = self._build_query_url()
         self.metadata = {}
-        self.err = False
-        self.err_type = 0
 
-    def load_events(self):
-        html_content = self._get_html_content()
+        self._load_events()
+
+
+    @staticmethod
+    def _is_file_type_object(f):
+        return hasattr(f, 'read')
+
+
+    def __repr__(self):
+        return "{Mnemo : %s   Title : %s   Tutor : %s   Type : %s    (%d events)}" % (self.metadata['mnemo'],
+               self.metadata['title'],
+               self.metadata['tutor'],
+               self.metadata['type'],
+               len(self.events))
+
+
+    def _load_events(self):
         try:
-            self.metadata = self._extract_header(html_content)
-            self.events = self._extract_table(html_content)
+            self.metadata = self._extract_header(self.html_content)
+            self.events = self._extract_table(self.html_content)
         except AttributeError:
-            self._guess_query_error(html_content)
-            
+            self._guess_query_error(self.html_content)
 
-    def _build_query_url(self):
-        params = urllib.urlencode({'template': 'cours', 'weeks': '1-31',
-                                   'days': '1-6', 'periods':'5-29',
-                                   'width':0,'height':0})
-        url = '%s/Reporting/Individual;Courses;name;%s?%s'%(self.host, self.mnemo, params)
-        return url
-
-
-    def _get_html_content(self):
-        try:
-            html_page = urllib.urlopen(self.url)
-            html_content = html_page.read()
-            return html_content
-        except:
-            raise ValueError('Could not get html content for course : %s' % self.mnemo)
-    
 
     def _extract_header(self, html):
         '''parse html page to find global informations'''
         soup = BeautifulSoup(html)
         bTag = soup.find('td',text=re.compile('Horaire'))
-        head = {}
-        head['mnemo'] = bTag.split(':')[1].split('-')[0].lstrip()
-        head['title'] = bTag.split(':')[1].split('-')[1].lstrip()
+        head = {'mnemo': bTag.split(':')[1].split('-')[0].lstrip(),
+                'title': bTag.split(':')[1].split('-')[1].lstrip(),
+                'tuto': None,
+                'type': None
+        }
         bTag = soup.find('td',text=re.compile('Titulaire'))
         head['tutor'] = bTag.split(':')[1].lstrip()
         head['type'] = 'course'
@@ -84,24 +86,24 @@ class CourseCalendar(object):
         day = -1
         n = 0
         for (no_line,line) in enumerate(lines[1:]):
-            if n==0:
+            if not n:
                 n = n_rows[no_line]
                 day = day + 1
                 current_time = -1
             else:
                 current_time = 0
-            n = n-1
+            n -= 1
             slots = line.findAll(name='td',recursive=False)
             for s in slots:
                 cell = s.findAll(name='table',recursive=False)
                 # event found
                 if len(cell)>1:
-                    event = {}
-                    event['no_line'] = no_line
-                    event['day'] = day
-                    event['start'] = hours[current_time]
+                    event = {'no_line': no_line,
+                             'day': day,
+                             'start': hours[current_time],
+                             'duration': int(s['colspan'])
+                    }
                     #duration in hours is extract from the colspan
-                    event['duration'] = int(s['colspan'])
                     #compute end time (1 colspan=1/2 hour)
                     delta = timedelta(hours=event['duration']/2)
                     event['end'] = hours[current_time]+delta
@@ -117,17 +119,15 @@ class CourseCalendar(object):
                     current_time = current_time + event['duration']
                     event_list.append(event)
                 else:
-                    current_time = current_time + 1
+                    current_time += 1
         #now event are ready for export
         return event_list
 
     
     def _guess_query_error(self, html_content):
         if self._find_error_400(html_content):
-            self.err = True
-            self.err_type = CourseCalendar.ERR_COURSE_NOT_FOUND
-            return True
-        return False
+            raise CourseNotFoundException("Gehol returned Error 400. This can happen for non-existent courses")
+        raise UnknowErrorException("The fetched data is not a course calendar page. Check your query URL")
 
     
     def _find_error_400(self, html_content):
@@ -135,7 +135,7 @@ class CourseCalendar(object):
         error_header = soup.findAll(name="h1")
         if error_header:
             h1_tag = error_header[0]
-            return h1_tag.contents[0] == u'400  Bad Request'
+            return h1_tag.contents[0].replace(" ", "") == u'400BadRequest'
         return False
 
     
