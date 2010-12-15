@@ -43,10 +43,11 @@ class GeholProxy(object):
 
     def _get_html_data(self, url):
         """
-        Fetches html data. Returns a file-like object from which to read the data from.
+        Fetches html data. Returns a file-like object from which to read the actual content.
         """
         try:
             html_page = urllib.urlopen(url)
             return html_page
-        except:
-            raise ValueError('Could not get fetch url : %s' % url)
+        except Exception,e:
+            raise ValueError('Could not get fetch url : %s (Reason : %s)' % (url, e.message))
+        
