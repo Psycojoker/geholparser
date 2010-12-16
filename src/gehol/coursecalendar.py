@@ -1,3 +1,4 @@
+import httplib
 import re
 from datetime import datetime, timedelta
 from BeautifulSoup import BeautifulSoup
@@ -8,7 +9,6 @@ class CourseNotFoundException(Exception):
 
 class UnknowErrorException(Exception):
     pass
-
 
 class CourseCalendar(object):
     '''Loads events for a given course'''
@@ -27,7 +27,6 @@ class CourseCalendar(object):
     def _is_file_type_object(f):
         return hasattr(f, 'read')
 
-
     def __repr__(self):
         return "{Mnemo : %s   Title : %s   Tutor : %s   Type : %s    (%d events)}" % (self.metadata['mnemo'],
                self.metadata['title'],
@@ -42,6 +41,15 @@ class CourseCalendar(object):
             self.events = self._extract_table(self.html_content)
         except AttributeError:
             self._guess_query_error(self.html_content)
+
+            conn.request("GET", self.url, headers = headers)
+            response = conn.getresponse()
+
+            print response.status, response.reason
+            html_content = response.read()
+
+            print html_content
+            conn.close()
 
 
     def _extract_header(self, html):
