@@ -8,7 +8,7 @@ class GeholProxy(object):
     """
     Entry point for all Gehol queries
     """
-    def __init__(self, host="http://164.15.72.157:8080"):
+    def __init__(self, host="164.15.72.157:8080"):
         """
         - host: optionnal gehol host string. Default value = "http://164.15.72.157:8080"
         """
@@ -37,7 +37,7 @@ class GeholProxy(object):
                                    'periods':'5-29',
                                    'width':0,
                                    'height':0})
-        url = '%s/Reporting/Individual;Courses;name;%s?%s'%(self.host, mnemo, params)
+        url = 'http://%s/Reporting/Individual;Courses;name;%s?%s'%(self.host, mnemo, params)
         return url
 
 
