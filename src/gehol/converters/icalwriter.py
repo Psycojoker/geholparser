@@ -29,6 +29,7 @@ def to_ical(head,events,first_monday):
             cal_event = Event()
 
             cal_event.add('summary', summary)
+            cal_event.add('dtstamp', dtstart)
             cal_event.add('dtstart', dtstart)
             cal_event.add('dtend', dtend)
             cal_event['location'] = vText(location)
