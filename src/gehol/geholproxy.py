@@ -17,15 +17,24 @@ class GeholProxy(object):
 
     def get_course_calendar(self, course_mnemonic):
         """
-        Performs a Gehol query and retrieves the events associated to the given course
+        Builds a Gehol query YRL and retrieves the events associated to the given course
 
         - course_mnemonic: string
         """
         url = self._build_course_query_url(course_mnemonic)
+        return self.get_course_calendar_from_url(url)
+        
+
+    def get_course_calendar_from_url(self, url):
+        """
+        Performs a Gehol query and retrieves the events associated to the given course
+
+        - url: valid Gehol URL
+        """
         html_data = self._get_html_data(url)
         cal = CourseCalendar(html_data)
         return cal
-
+        
 
     def _build_course_query_url(self, mnemo):
         """
@@ -37,7 +46,7 @@ class GeholProxy(object):
                                    'periods':'5-29',
                                    'width':0,
                                    'height':0})
-        url = 'http://%s/Reporting/Individual;Courses;name;%s?%s'%(self.host, mnemo, params)
+        url = '/Reporting/Individual;Courses;name;%s?%s'%(mnemo, params)
         return url
 
 
@@ -46,8 +55,11 @@ class GeholProxy(object):
         Fetches html data. Returns a file-like object from which to read the actual content.
         """
         try:
-            html_page = urllib.urlopen(url)
-            return html_page
+            headers = {"Content-type": "application/x-www-form-urlencoded","Accept": "text/plain"}
+            conn = httplib.HTTPConnection(self.host)
+            conn.request("GET", url, headers = headers)
+            response = conn.getresponse()        
+            return response
         except Exception,e:
             raise ValueError('Could not get fetch url : %s (Reason : %s)' % (url, e.message))
         
