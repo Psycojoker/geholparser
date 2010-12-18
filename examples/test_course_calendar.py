@@ -4,9 +4,6 @@ sys.path.append('../src')
 from gehol import GeholProxy
 
 
-
-
-
 def test_valid_course():
     gehol_proxy = GeholProxy("164.15.72.157:8080")
     course_mnemo = "INFOH500"

@@ -1,7 +1,8 @@
 
 import urllib
+import urlparse
 import httplib
-from coursecalendar import CourseCalendar
+from coursecalendar import CourseCalendar, GeholException
 
 
 class GeholProxy(object):
@@ -31,7 +32,10 @@ class GeholProxy(object):
 
         - url: valid Gehol URL
         """
-        html_data = self._get_html_data(url)
+        parsed_url = urlparse.urlparse(url)
+        scheme, netloc, path, params, query, frag = parsed_url
+        self.host = netloc
+        html_data = self._get_html_data("%s;%s?%s" % (path, params, query))
         cal = CourseCalendar(html_data)
         return cal
         
@@ -60,6 +64,6 @@ class GeholProxy(object):
             conn.request("GET", url, headers = headers)
             response = conn.getresponse()        
             return response
-        except Exception,e:
+        except GeholException,e:
             raise ValueError('Could not get fetch url : %s (Reason : %s)' % (url, e.message))
         
