@@ -11,7 +11,7 @@ def to_ical(head,events,first_monday):
     date_init = datetime.strptime(first_monday,'%d/%m/%Y')
 
     cal = Calendar()
-    cal.add('prodid', 'https://bitbucket.org/odebeir/ulbcalendar2cvs')
+    cal.add('prodid', 'https://bitbucket.org/odebeir/geholimport')
     cal.add('version', '2.0')
 
     for event in events:

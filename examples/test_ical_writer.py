@@ -16,10 +16,10 @@ if __name__=="__main__":
     for course in all_courses:
         print "fetching events for course %s" % course
         cal = gehol_proxy.get_course_calendar(course)
-        dest_filename = 'agenda_%s.csv' % course
+        dest_filename = '%s.ics' % course
         print "Saving %s events to %s" % (course, dest_filename)
         ical_string = to_ical(cal.metadata, cal.events, first_monday)
         print ical_string
         export_ical(cal.metadata, cal.events, dest_filename, first_monday)
-
+        
 
