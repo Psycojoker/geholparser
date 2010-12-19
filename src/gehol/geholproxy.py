@@ -11,10 +11,9 @@ class GeholProxy(object):
     """
     def __init__(self, host="164.15.72.157:8080"):
         """
-        - host: optionnal gehol host string. Default value = "http://164.15.72.157:8080"
+        - host: optionnal gehol host string. Default value = "164.15.72.157:8080"
         """
         self.host = host
-
 
     def get_course_calendar(self, course_mnemonic):
         """
@@ -23,7 +22,7 @@ class GeholProxy(object):
         - course_mnemonic: string
         """
         url = self._build_course_query_url(course_mnemonic)
-        return self.get_course_calendar_from_url(url)
+        return self.get_course_calendar_from_url("http://%s%s" %  (self.host,url))
         
 
     def get_course_calendar_from_url(self, url):
