@@ -1,3 +1,5 @@
+#!/usR/bin/env python
+# -*- coding: utf-8 -*-
 __author__ = 'Frederic'
 
 import sys
@@ -12,5 +14,8 @@ if __name__ == "__main__":
     cal = StudentCalendar(f)
     print cal.header_data
     pprint(cal.events)
+
+    #fuuuu = cal.events['monday'][0]['type'].encode('utf-8')
+
 
 

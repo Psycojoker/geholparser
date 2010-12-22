@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 __author__ = 'Frederic'
 
 
@@ -12,7 +15,7 @@ class StudentCalendar(object):
         if self._is_file_type_object(markup):
             markup = markup.read()
         self.html_content = markup
-        soup = BeautifulSoup(self.html_content, fromEncoding='ISO-8859-15')
+        soup = BeautifulSoup(self.html_content, fromEncoding='iso-8859-2')
         self.header_data = {'student_profile':None, 'faculty':None}
         self.events = {}
         self._load_content_from_soup(soup)
@@ -55,12 +58,6 @@ class StudentCalendar(object):
         # First <td> is the weekday string, so we skip it.
         row = weekday_row.findChildren('td', recursive=False)
         all_day_slots = row[1:]
-        #print row[0].text
-
-        #for slot in all_day_slots:
-        #    if self._slot_has_event(slot):
-        #        event_data = self._process_event(slot)
-        #        print event_data['title']
 
         events = [self._process_event(slot) for slot in all_day_slots if self._slot_has_event(slot)]
         return events
