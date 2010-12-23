@@ -21,7 +21,9 @@ class StudentCalendar(object):
 
     def _load_content_from_soup(self, soup):
         top_level_tables = soup.html.body.findAll(name="table", recursive=False)
-        header, event_grid, footer, footer2 = top_level_tables
+        # Take only the first 3 top-level tables. Sometimes the html is broken and we don't get the 4th.
+        # We also don't get the closing tags. This piece of software is pretty brilliant
+        header, event_grid, footer = top_level_tables[:3]
 
         self._load_header_data(header)
         self._load_events(event_grid)
@@ -50,7 +52,6 @@ class StudentCalendar(object):
 
         # get the events for each day
         weekday_rows = all_rows[1:]
-        print len(weekday_rows)
         week_events = [self._load_weekday_events(weekday_data, day, hours) for (day,weekday_data) in enumerate(weekday_rows)]
         self.events = week_events
 
@@ -79,7 +80,10 @@ class StudentCalendar(object):
     def _process_event(self, object_cell, starting_hour):
         num_timeslots = int(object_cell['colspan'])
         cell_tables = object_cell.findChildren('table', recursive=False)
-        # 3 tables : location/course type, title, tutor/weeks
+        # event box : 3 tables, one per line :
+        #   - location/course type 
+        #   - title
+        #   - tutor/weeks
         location_type_table, title_table, tutor_weeks_table = cell_tables
 
         location = location_type_table.tr.findChildren('td')[0].text
