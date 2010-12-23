@@ -3,8 +3,6 @@
 
 __author__ = 'Frederic'
 
-
-import re
 from datetime import datetime, timedelta
 from BeautifulSoup import BeautifulSoup
 from utils import split_weeks, convert_time
@@ -45,13 +43,19 @@ class StudentCalendar(object):
 
     def _load_events(self, event_table):
         all_rows = event_table.findChildren('tr', recursive=False)
+
+        # get the column labels, save as actual hours objects
+        hours_row = all_rows[0].findChildren('td', recursive=False)
+        hours = [convert_time(hour_col.text) for hour_col in hours_row[1:]]
+
+        # get the events for each day
         weekday_rows = all_rows[1:]
+        print len(weekday_rows)
+        week_events = [self._load_weekday_events(weekday_data, day, hours) for (day,weekday_data) in enumerate(weekday_rows)]
+        self.events = week_events
 
-        week_events = [self._load_weekday_events(weekday) for weekday in weekday_rows]
-        self.events = dict(zip(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"], week_events))
 
-
-    def _load_weekday_events(self, weekday_row):
+    def _load_weekday_events(self, weekday_row, day, hours):
         """
         """
         # At this point we should have a bunch of <td> elements. Some cells are empty, some cells have an event in them.
@@ -59,24 +63,43 @@ class StudentCalendar(object):
         row = weekday_row.findChildren('td', recursive=False)
         all_day_slots = row[1:]
 
-        events = [self._process_event(slot) for slot in all_day_slots if self._slot_has_event(slot)]
+        events = []
+        current_time_idx = 0
+        for time_slot in all_day_slots:
+            if self._slot_has_event(time_slot):
+                new_event = self._process_event(time_slot, hours[current_time_idx])
+                events.append(new_event)
+                current_time_idx += new_event['num_timeslots']
+            else:
+                current_time_idx += 1
+                
         return events
 
 
-    def _process_event(self, object_cell):
+    def _process_event(self, object_cell, starting_hour):
+        num_timeslots = int(object_cell['colspan'])
         cell_tables = object_cell.findChildren('table', recursive=False)
-        type_table, title_table, tutor_week_table = cell_tables
-        course_type = type_table.tr.findChildren('td')[1].text
+        # 3 tables : location/course type, title, tutor/weeks
+        location_type_table, title_table, tutor_weeks_table = cell_tables
+
+        location = location_type_table.tr.findChildren('td')[0].text
+        course_type = location_type_table.tr.findChildren('td')[1].text
+
         course_title = title_table.tr.td.text
-        children = tutor_week_table.findChildren('td')
+
+        children = tutor_weeks_table.findChildren('td')
         course_tutor = children[0].text
         course_weeks = children[2].text
 
         return {
             'type':course_type,
+            'location':location,
             'organizer':course_tutor,
             'title':course_title,
-            'weeks':course_weeks
+            'weeks':split_weeks(course_weeks),
+            'num_timeslots':num_timeslots,
+            'start_time':starting_hour,
+            'stop_time':starting_hour + timedelta(hours=num_timeslots/2) # 1 timeslot = 30mins
         }
 
 
