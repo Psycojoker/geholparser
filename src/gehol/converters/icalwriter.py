@@ -48,7 +48,55 @@ def to_ical(head,events,first_monday):
 
     return cal.as_string()
 
+
+
+def convert_student_calendar_to_ical(student_calendar, first_monday):
+    date_init = datetime.strptime(first_monday,'%d/%m/%Y')
+
+    ical = Calendar()
+    ical.add('prodid', 'https://bitbucket.org/odebeir/geholimport')
+    ical.add('version', '2.0')
+    ical.add('summary', student_calendar.description)
+    ical.add('x-wr-calname', student_calendar.profile)
+    ical.add('x-wr-caldesc', student_calendar.description)
+
+    print "adding : %d events" % len(student_calendar.events)
+
+
+    for event in student_calendar.events:
+        # get some common data for all generated events
+        event_summary =  "%s (%s)" % (event['title'], event['type'])
+        event_organizer = event['organizer']
+        event_location = event['location']
+        #print 'expanding events for %s' % event_summary.encode('iso-8859-2')
+
+        #expand to ical events
+        for (i, event_week) in enumerate(event['weeks']):
+            delta = timedelta(days=(event_week-1)*7+(event['day']))
+            dtstart = date_init+delta + timedelta(hours = event['start_time'].hour,
+                                                    minutes = event['start_time'].minute)
+            dtend = date_init+delta + timedelta(hours = event['stop_time'].hour,
+                                            minutes = event['stop_time'].minute)
+            ical_event = Event()
+
+            ical_event.add('summary', event_summary)
+            ical_event.add('location', event_location)
+            ical_event.add('cn', "foo")#event_organizer.encode('iso-8859-2'))
+            ical_event.add('dtstart', dtstart)
+            ical_event.add('dtend', dtend)
+
+            ical.add_component(ical_event)
+
+    return ical.as_string()
+
+
+
 def export_ical(head,events,dest_filename, first_monday):
     ical_string = to_ical(head,events,first_monday)
     fd = open(dest_filename,'w')
     fd.write(ical_string)
+
+
+def write_ical_to_file(ical_data, dest_filename):
+    fd = open(dest_filename,'w')
+    fd.write(ical_data)
