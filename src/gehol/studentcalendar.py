@@ -103,9 +103,13 @@ class StudentCalendar(object):
             'weeks':split_weeks(course_weeks),
             'num_timeslots':num_timeslots,
             'start_time':starting_hour,
-            'stop_time':starting_hour + timedelta(hours=num_timeslots/2) # 1 timeslot = 30mins
+            'stop_time':starting_hour + timedelta(hours = self._convert_num_timeslots_to_hours(num_timeslots))
         }
 
+    @staticmethod
+    def _convert_num_timeslots_to_hours(num_timeslots):
+        # 1 timeslot = 30 minutes
+        return float(num_timeslots / 2)
 
     @staticmethod
     def _slot_has_event(slot):
