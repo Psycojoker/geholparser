@@ -43,6 +43,7 @@ class StudentCalendar(BaseCalendar):
         except AttributeError,e:
             self._guess_query_error(self.html_content)
 
+            
     def _load_header_data(self, header):
         all_entries = header.findAll(name='table')
         faculty_table = all_entries[4]
@@ -83,6 +84,7 @@ class StudentCalendar(BaseCalendar):
 
 
     def _get_num_row_per_day(self, event_rows):
+        # TODO: this needs work
         day_string = ['lun.', 'mar.', 'mer.' , 'jeu.', 'ven.', 'sam.']
         num_rows = []
         for row in event_rows:
@@ -106,6 +108,12 @@ class StudentCalendar(BaseCalendar):
                 events.append(new_event)
                 current_time_idx += new_event['num_timeslots']
             else:
+                # This is tricky : in the first row of each day, the first column (which contains the name of t
+                # he current day) does not count as a time slot.
+                # Another way to say it is, for each row, the time slots
+                # go from 1 to n in the first row, and 0 to n in all the others.
+                # Thus, we increment the current time slot index only if we're not in the first column of the first row.
+                # Thanks a lot, Scientia.nl
                 if time_slot.text not in ['lun.', 'mar.', 'mer.' , 'jeu.', 'ven.', 'sam.']:
                     current_time_idx += 1
                 
