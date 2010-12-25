@@ -12,6 +12,7 @@ class BaseCalendar(object):
     def name(self):
         raise NotImplementedError
 
+
     @property
     def description(self):
         raise NotImplementedError
@@ -24,7 +25,7 @@ class BaseCalendar(object):
 
     def _guess_query_error(self, html_content):
         if self._find_error_400(html_content):
-            raise CourseNotFoundException("Gehol returned Error 400. This can happen for non-existent pages")
+            raise GeholPageNotFoundException("Gehol returned Error 400. This can happen for non-existent pages")
         raise UnknowErrorException("The fetched data is not a course calendar page. Check your query URL")
 
 

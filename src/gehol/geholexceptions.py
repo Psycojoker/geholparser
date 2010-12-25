@@ -4,7 +4,7 @@ __author__ = 'sevas'
 class GeholException(Exception):
     pass
 
-class CourseNotFoundException(GeholException):
+class GeholPageNotFoundException(GeholException):
     pass
 
 class UnknowErrorException(GeholException):
