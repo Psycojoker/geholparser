@@ -2,7 +2,8 @@
 import urllib
 import urlparse
 import httplib
-from coursecalendar import CourseCalendar, GeholException
+from exceptions import *
+from coursecalendar import CourseCalendar
 from studentcalendar import StudentCalendar
 
 

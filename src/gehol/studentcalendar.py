@@ -6,10 +6,11 @@ __author__ = 'Frederic'
 from datetime import datetime, timedelta
 from BeautifulSoup import BeautifulSoup
 from utils import split_weeks, convert_time
-import chardet
+from calendar import BaseCalendar
 
-class StudentCalendar(object):
+class StudentCalendar(BaseCalendar):
     def __init__(self, markup):
+        super(StudentCalendar, self).__init__()
         if self._is_file_type_object(markup):
             markup = markup.read()
         self.html_content = markup
@@ -17,6 +18,7 @@ class StudentCalendar(object):
         self.header_data = {'student_profile':None, 'faculty':None}
         self.events = []
         self._load_content_from_soup(soup)
+
 
     @property
     def description(self):
@@ -146,8 +148,3 @@ class StudentCalendar(object):
     @staticmethod
     def _slot_has_event(slot):
         return slot.table is not None
-
-
-    @staticmethod
-    def _is_file_type_object(f):
-        return hasattr(f, 'read')
