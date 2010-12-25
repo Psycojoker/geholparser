@@ -13,7 +13,7 @@ class StudentCalendar(object):
         if self._is_file_type_object(markup):
             markup = markup.read()
         self.html_content = markup
-        soup = BeautifulSoup(self.html_content, fromEncoding='iso-8859-2')
+        soup = BeautifulSoup(self.html_content, fromEncoding='iso-8859-1')
         self.header_data = {'student_profile':None, 'faculty':None}
         self.events = []
         self._load_content_from_soup(soup)
@@ -101,15 +101,15 @@ class StudentCalendar(object):
         for time_slot in all_day_slots:
             if self._slot_has_event(time_slot):
                 new_event = self._process_event(time_slot, hours[current_time_idx], num_day)
-                print "[%d] %s (ts:%d)" % (num_day, new_event['title'].encode('iso-8859-2'), current_time_idx)
+                #print "[%d] %s (ts:%d)" % (num_day, new_event['title'], current_time_idx)
                 events.append(new_event)
                 current_time_idx += new_event['num_timeslots']
             else:
                 if time_slot.text not in ['lun.', 'mar.', 'mer.' , 'jeu.', 'ven.', 'sam.']:
                     current_time_idx += 1
-                    print "[%d] ." % num_day
-                else:
-                    print "[%d] #" % num_day
+                    #print "[%d] ." % num_day
+                #else:
+                #    print "[%d] #" % num_day
                 
         return events
 

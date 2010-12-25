@@ -194,7 +194,8 @@ def convert_student_calendar_to_ics_rfc5545(student_calendar, first_monday):
     write_line(out, "END:VCALENDAR")
     ical_string = out.getvalue()
     out.close()
-    return ical_string.encode("iso-8859-2")
+
+    return ical_string.encode('utf-8')
 
 
 def export_ical(head,events,dest_filename, first_monday):
