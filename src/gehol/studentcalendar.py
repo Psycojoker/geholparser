@@ -21,11 +21,11 @@ class StudentCalendar(object):
     @property
     def description(self):
         descr = "[%s] %s" % (self.header_data['faculty'], self.header_data['student_profile'])
-        return descr.replace(':', '-') #.encode("iso-8859-2")
+        return descr.replace(':', '-')
 
 
     @property
-    def profile(self):
+    def name(self):
         return  self.header_data['student_profile'].replace(':', '-')
 
 
@@ -65,7 +65,6 @@ class StudentCalendar(object):
         self.events = []
 
         rows_per_day = self._get_num_row_per_day(event_rows)
-        print rows_per_day
         current_row_index = 0
 
         for (num_day, day_string, num_rows) in rows_per_day:
@@ -75,7 +74,6 @@ class StudentCalendar(object):
                                                           num_day,
                                                           hours)
                 day_events.extend(events_in_row)
-            print "found %d events for day: %s" % (len(day_events), day_string)
             self.events.extend(day_events)
             current_row_index += num_rows
 
@@ -101,15 +99,11 @@ class StudentCalendar(object):
         for time_slot in all_day_slots:
             if self._slot_has_event(time_slot):
                 new_event = self._process_event(time_slot, hours[current_time_idx], num_day)
-                #print "[%d] %s (ts:%d)" % (num_day, new_event['title'], current_time_idx)
                 events.append(new_event)
                 current_time_idx += new_event['num_timeslots']
             else:
                 if time_slot.text not in ['lun.', 'mar.', 'mer.' , 'jeu.', 'ven.', 'sam.']:
                     current_time_idx += 1
-                    #print "[%d] ." % num_day
-                #else:
-                #    print "[%d] #" % num_day
                 
         return events
 
