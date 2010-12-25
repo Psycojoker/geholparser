@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from BeautifulSoup import BeautifulSoup
 from utils import split_weeks, convert_time
 
-
 class GeholException(Exception):
     pass
 
@@ -23,13 +22,22 @@ class CourseCalendar(object):
         self.html_content = markup
         self.events = []
         self.metadata = {}
-
         self._load_events()
+
+    @property
+    def name(self):
+        return "%s - %s" % (self.metadata['mnemo'], self.metadata['title'])
+
+
+    @property
+    def description(self):
+        return "%s - %s (%s) [%s]" % tuple([self.metadata[k] for k in ('mnemo', 'title', 'type', 'tutor')])
 
 
     @staticmethod
     def _is_file_type_object(f):
         return hasattr(f, 'read')
+
 
     def __repr__(self):
         return "{Mnemo : %s   Title : %s   Tutor : %s   Type : %s    (%d events)}" % (self.metadata['mnemo'],
