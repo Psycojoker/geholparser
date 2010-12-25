@@ -3,6 +3,7 @@ import urllib
 import urlparse
 import httplib
 from coursecalendar import CourseCalendar, GeholException
+from studentcalendar import StudentCalendar
 
 
 class GeholProxy(object):
