@@ -84,6 +84,18 @@ class StudentCalendar(BaseCalendar):
 
 
     def _get_num_row_per_day(self, event_rows):
+        """
+        Extracts the number of rows allocated for each day in the html table
+
+        Params:
+        - event_rows : a list of table rows. Each row contains parsed html data (w/ BeautifulSoup)
+
+        Returns:
+        - A list of (num_day, day_string, num_rows) tuples.
+        """
+
+        # This is a first pass on the whole table of events. We extract the number of rows allocated for each day in
+        # the layout algorithm. We use the 'rowspan' attribute present in the first column of the first row of each day.
         # TODO: this needs work
         day_string = ['lun.', 'mar.', 'mer.' , 'jeu.', 'ven.', 'sam.']
         num_rows = []
@@ -94,6 +106,10 @@ class StudentCalendar(BaseCalendar):
 
     def _load_weekday_events(self, weekday_row, num_day, hours):
         """
+        Finds and load the events in one row of a day.
+        - weekday_row : the parsed data (w/ BeautifulSoup) for the current day row
+        - num_day : number of the current day (0 to 6)
+        - hours : a list of all the timeslot hours (as datetime objects) for a day.
         """
         # At this point we should have a bunch of <td> elements. Some cells are empty, some cells have an event in them.
         # First <td> is the weekday string, so we skip it.
