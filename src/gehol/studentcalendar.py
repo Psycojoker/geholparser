@@ -32,14 +32,16 @@ class StudentCalendar(BaseCalendar):
 
 
     def _load_content_from_soup(self, soup):
-        top_level_tables = soup.html.body.findAll(name="table", recursive=False)
-        # Take only the first 3 top-level tables. Sometimes the html is broken and we don't get the 4th.
-        # We also don't get the closing tags. This piece of software is pretty brilliant
-        header, event_grid, footer = top_level_tables[:3]
+        try:
+            top_level_tables = soup.html.body.findAll(name="table", recursive=False)
+            # Take only the first 3 top-level tables. Sometimes the html is broken and we don't get the 4th.
+            # We also don't get the closing tags. This piece of software is pretty brilliant
+            header, event_grid, footer = top_level_tables[:3]
 
-        self._load_header_data(header)
-        self._load_events(event_grid)
-
+            self._load_header_data(header)
+            self._load_events(event_grid)
+        except AttributeError,e:
+            self._guess_query_error(self.html_content)
 
     def _load_header_data(self, header):
         all_entries = header.findAll(name='table')
