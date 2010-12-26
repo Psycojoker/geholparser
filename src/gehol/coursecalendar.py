@@ -122,5 +122,4 @@ class CourseCalendar(BaseCalendar):
                     event_list.append(event)
                 else:
                     current_time += 1
-        #now event are ready for export
         return event_list

@@ -2,7 +2,6 @@ import sys
 sys.path.append("../src")
 
 from gehol import GeholProxy
-from gehol.converters.icalwriter import export_ical, to_ical
 from gehol.converters.utils import write_content_to_file
 from gehol.converters.rfc5545icalwriter import convert_geholcalendar_to_ical
 
