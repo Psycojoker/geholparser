@@ -8,9 +8,9 @@ from BeautifulSoup import BeautifulSoup
 from utils import split_weeks, convert_time
 from calendar import BaseCalendar
 
-class StudentCalendar(BaseCalendar):
+class StudentSetCalendar(BaseCalendar):
     def __init__(self, markup):
-        super(StudentCalendar, self).__init__()
+        super(StudentSetCalendar, self).__init__()
         if self._is_file_type_object(markup):
             markup = markup.read()
         self.html_content = markup

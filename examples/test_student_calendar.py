@@ -6,7 +6,7 @@ import os
 import sys
 sys.path.append("../src")
 from gehol import GeholProxy
-from gehol.studentcalendar import StudentCalendar
+from gehol.studentsetcalendar import StudentSetCalendar
 from gehol.converters.utils import  write_content_to_file
 from gehol.converters.rfc5545icalwriter import convert_calendar_to_ical
 from pprint import pprint
@@ -20,7 +20,7 @@ first_monday = '20/09/2010'
 
 def make_ical_from_local_file(filename):
     f = open(filename)
-    cal = StudentCalendar(f)
+    cal = StudentSetCalendar(f)
     print cal.header_data
     pprint(cal.events)
 
@@ -36,7 +36,7 @@ URLs = [("MA1 en sciences informatiques - Spécialisée - Multimedia", "http://1
 
 def make_ical_from_url(name, url):
     gehol_proxy = GeholProxy()
-    cal = gehol_proxy.get_student_calendar_from_url(url)
+    cal = gehol_proxy.get_studentset_calendar_from_url(url)
     ical_data = convert_calendar_to_ical(cal, first_monday)
     outfile = "%s.ics" % name
     print "writing ical file : %s" % outfile
