@@ -24,8 +24,9 @@ def convert_week_number_to_date(week_number, first_monday):
     """
     Returns a datetime object corresponding to the monday of the given week number.
     """
+    assert(1 <= week_number <= 36)
     first_gehol_year_day = datetime.strftime("%d/%m/%Y")
-    num_days = week_number * 7
+    num_days = (week_number-1) * 7
     dt = timedelta(days = num_days)
     return first_gehol_year_day + dt
     
