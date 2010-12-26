@@ -3,7 +3,8 @@ sys.path.append("../src")
 
 from gehol import GeholProxy
 from gehol.converters.icalwriter import export_ical, to_ical
-
+from gehol.converters.utils import write_content_to_file
+from gehol.converters.rfc5545icalwriter import convert_geholcalendar_to_ical
 
 if __name__=="__main__":
     print 'import calendar test --> csv files'
@@ -17,8 +18,8 @@ if __name__=="__main__":
         print "fetching events for course %s" % course
         cal = gehol_proxy.get_course_calendar(course)
         dest_filename = '%s.ics' % course
+        ical = convert_geholcalendar_to_ical(cal, first_monday)
         print "Saving %s events to %s" % (course, dest_filename)
-        ical_string = to_ical(cal.metadata, cal.events, first_monday)
-        export_ical(cal.metadata, cal.events, dest_filename, first_monday)
-        
+        ical_data = ical.as_string()
+        write_content_to_file(ical_data, dest_filename)
 
