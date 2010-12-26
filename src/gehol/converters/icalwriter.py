@@ -1,18 +1,20 @@
 from datetime import datetime, timedelta
 from icalendar import Calendar, Event, vText
-
-
+from utils import write_content_to_file
 
 def to_ical(head,events,first_monday):
     '''export events into iCal format
     the file is returned as a string
-    first_monday corresponds to the monday date of week 1 in Gehol
+    first_monday is the date of the monday in week 1 in Gehol (in the DD/MM/YYYY format)
     '''
     date_init = datetime.strptime(first_monday,'%d/%m/%Y')
 
     cal = Calendar()
-    cal.add('prodid', 'https://bitbucket.org/odebeir/ulbcalendar2cvs')
+    cal.add('prodid', 'https://bitbucket.org/odebeir/geholimport')
     cal.add('version', '2.0')
+    cal.add('summary', head['title'])
+    cal.add('x-wr-calname', "%s - %s"  % (head['mnemo'], head['title']))
+    cal.add('x-wr-caldesc', "%s - %s (%s)" % (head['mnemo'], head['title'], head['tutor']))
 
     for event in events:
         n = len(event['weeks'])
@@ -20,8 +22,10 @@ def to_ical(head,events,first_monday):
             summary = '%s%s (%d/%d)'%(head['mnemo'],event['type'],i+1,n)
             #add offset corresponding to week numbers for each event repetition
             delta = timedelta(days=(sub-1)*7+(event['day']))
-            dtstart = date_init+delta + timedelta(hours = event['start'].hour, minutes = event['start'].minute)
-            dtend = date_init+delta + timedelta(hours = event['end'].hour, minutes = event['end'].minute)
+            dtstart = date_init+delta + timedelta(hours = event['start'].hour,
+                                                  minutes = event['start'].minute)
+            dtend = date_init+delta + timedelta(hours = event['end'].hour,
+                                                minutes = event['end'].minute)
 
             organizer = head['title']+' titulaire : '+ head['tutor']
             location = event['location']
@@ -35,16 +39,11 @@ def to_ical(head,events,first_monday):
             cal_event['location'] = vText(location)
             cal_event['organizer'] = vText(organizer)
 
-    #        cal_event.add('dtend', datetime(2005,4,4,10,0,0,tzinfo=UTC))
-    #        cal_event.add('dtstamp', datetime(2005,4,4,0,10,0,tzinfo=UTC))
-    #        event['uid'] = '20050115T101010/27346262376@mxm.dk'
-    #        event.add('priority', 5)
-
             cal.add_component(cal_event)
 
     return cal.as_string()
 
+
 def export_ical(head,events,dest_filename, first_monday):
     ical_string = to_ical(head,events,first_monday)
-    fd = open(dest_filename,'w')
-    fd.write(ical_string)
+    write_content_to_file(ical_string, dest_filename)

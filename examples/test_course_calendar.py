@@ -4,12 +4,8 @@ sys.path.append('../src')
 from gehol import GeholProxy
 
 
-
-
-
-def test_valid_course():
+def test_valid_course(course_mnemo="INFOH500"):
     gehol_proxy = GeholProxy("164.15.72.157:8080")
-    course_mnemo = "INFOH500"
     print "Fetching events for course : %s" % course_mnemo
     calendar = gehol_proxy.get_course_calendar(course_mnemo)
     print "Result : "
