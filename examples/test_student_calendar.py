@@ -44,6 +44,21 @@ def make_ical_from_url(name, url):
     write_content_to_file(ical_data, outfile)
 
 
+GROUP_IDs = ["%23SPLUS0FACD0", "%23SPLUS0FACD0", "%23SPLUSA6299D", "%23SPLUS35F0CB", "%23SPLUS35F0CA"]
+
+def make_ical_from_groupid(group_id):
+    gehol_proxy = GeholProxy()
+    cal = gehol_proxy.get_studentset_calendar(group_id, "1-14")
+    ical = convert_geholcalendar_to_ical(cal, first_monday)
+    ical_data = ical.as_string()
+    outfile = "%s.ics" % ical.name
+    write_content_to_file(ical_data, outfile)
+
+
+
 if __name__ == "__main__":
     for (profile, url) in URLs:
         make_ical_from_url(profile, url)
+
+    for id in GROUP_IDs:
+        make_ical_from_groupid(id)
