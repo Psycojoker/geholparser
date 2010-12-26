@@ -19,5 +19,4 @@ if __name__=="__main__":
         dest_filename = 'agenda_%s.csv' % course
         print "Saving %s events to %s" % (course, dest_filename)
         csv_string = to_csv(cal.metadata, cal.events, first_monday)
-        print csv_string
         export_csv(cal.metadata, cal.events, dest_filename, first_monday)

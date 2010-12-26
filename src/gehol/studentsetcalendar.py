@@ -5,7 +5,7 @@ __author__ = 'Frederic'
 
 from datetime import datetime, timedelta
 from BeautifulSoup import BeautifulSoup
-from utils import split_weeks, convert_time
+from utils import split_weeks, convert_time, convert_week_number_to_date
 from calendar import BaseCalendar
 
 class StudentSetCalendar(BaseCalendar):
@@ -129,7 +129,7 @@ class StudentSetCalendar(BaseCalendar):
                 # Another way to say it is, for each row, the time slots
                 # go from 1 to n in the first row, and 0 to n in all the others.
                 # Thus, we increment the current time slot index only if we're not in the first column of the first row.
-                # Thanks a lot, Scientia.nl
+                # Thanks a lot, Scientia(r) Course Planner(tm)(c)
                 if time_slot.text not in ['lun.', 'mar.', 'mer.' , 'jeu.', 'ven.', 'sam.']:
                     current_time_idx += 1
                 
@@ -165,6 +165,7 @@ class StudentSetCalendar(BaseCalendar):
             'stop_time':starting_hour + timedelta(hours = self._convert_num_timeslots_to_hours(num_timeslots)),
             'day':num_day
         }
+    
 
     @staticmethod
     def _convert_num_timeslots_to_hours(num_timeslots):
