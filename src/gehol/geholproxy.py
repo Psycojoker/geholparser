@@ -93,7 +93,6 @@ class GeholProxy(object):
         Fetches html data. Returns a file-like object from which to
         read the actual content.
         """
-        print ">>> URL", url
         try:
             headers = {"Content-type": "application/x-www-form-urlencoded",
                        "Accept": "text/plain"}
