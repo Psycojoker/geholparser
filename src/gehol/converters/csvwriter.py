@@ -25,9 +25,9 @@ def to_csv(head, events, first_monday):
             #add offset corresponding to week numbers for each event repetition
             delta = timedelta(days=(sub-1)*7+(event['day']))
             start_date = unicode((date_init+delta).strftime("%d/%m/%y"),'utf-8')
-            start_time = unicode(event['start'].strftime("%I:%M:%S %p"),'utf-8')
+            start_time = unicode(event['start_time'].strftime("%I:%M:%S %p"),'utf-8')
             end_date = start_date
-            end_time = unicode(event['end'].strftime("%I:%M:%S %p"),'utf-8')
+            end_time = unicode(event['stop_time'].strftime("%I:%M:%S %p"),'utf-8')
             all_day_event = u'False'
             description = head['title']+' titulaire : '+ head['tutor']
             location = event['location']
