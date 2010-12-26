@@ -42,6 +42,5 @@ def export_csv(head,events,dest_filename, first_monday):
     '''write the events in a csv utf-8 encoded file'''
     csv_string = to_csv(head,events,first_monday)
     fd = codecs.open(dest_filename,mode='w',encoding='utf-8')
-    print csv_string
     fd.write(csv_string)
 
