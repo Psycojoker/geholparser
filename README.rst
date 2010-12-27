@@ -17,7 +17,6 @@ External Dependencies
 
 - `BeautifulSoup <http://www.crummy.com/software/BeautifulSoup/>`_
 - `argparse <http://pypi.python.org/pypi/argparse/1.1>`_
-- `iCalendar <http://pypi.python.org/pypi/icalendar/1.2>`_
 
 
 
@@ -28,6 +27,11 @@ Roadmap
 Required for stable
 *******************
 
-- Support more gehol reports, not just the per-course view
 - Documentation
 
+
+Licence
+-------
+
+Released under the `MIT licence <http://www.opensource.org/licenses/mit-license.php>`.
+See COPYING.txt for details.
