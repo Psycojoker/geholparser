@@ -33,5 +33,5 @@ Required for stable
 Licence
 -------
 
-Released under the `MIT licence <http://www.opensource.org/licenses/mit-license.php>`.
+Released under the `MIT licence <http://www.opensource.org/licenses/mit-license.php>`_.
 See COPYING.txt for details.
