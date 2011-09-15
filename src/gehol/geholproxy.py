@@ -16,7 +16,7 @@ class GeholProxy(object):
     Entry point for all Gehol queries
     """
 
-    def __init__(self, host="164.15.72.157:8080"):
+    def __init__(self, host="164.15.72.157:8081"):
         """
         - host: optionnal gehol host string. Default value = "164.15.72.157:8080"
         """
