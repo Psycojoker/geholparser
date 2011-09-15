@@ -35,12 +35,11 @@ class CourseCalendar(BaseCalendar):
 
 
     def _load_events(self):
-        #try:
-        self.metadata = self._extract_header(self.html_content)
-        self.events = self._extract_table(self.html_content)
-        #except AttributeError, e:
-        #    raise e
-            #self._guess_query_error(self.html_content)
+        try:
+            self.metadata = self._extract_header(self.html_content)
+            self.events = self._extract_table(self.html_content)
+        except AttributeError, e:
+            self._guess_query_error(self.html_content)
 
 
 
