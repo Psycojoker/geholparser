@@ -7,7 +7,7 @@ from gehol.converters.rfc5545icalwriter import convert_geholcalendar_to_ical
 
 if __name__=="__main__":
     print 'import calendar test --> csv files'
-    all_courses = ['INFOH500','BIMEH404','STATH400', 'COMMB411', 'TRANH100', 'INFOH100']
+    all_courses = ['INFOH500','BIMEH404','STATH400', 'COMMB411', 'TRANH100', 'INFOH100', 'TRANH100']
     host = '164.15.72.157:8081'
     first_monday = '19/09/2011'
 

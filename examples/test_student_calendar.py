@@ -12,11 +12,9 @@ from gehol.converters.rfc5545icalwriter import convert_geholcalendar_to_ical
 from pprint import pprint
 
 DATA_DIR = "../data/student/"
-DATA_FILE = "../data/student/IR_MA1_img_1_14.html"
-DATA_FILE = "../data/student/SC_INFO_MA1_multimedia_1_14.html"
-DATA_FILE = "../data/student/PHILO_BA1_HIST_1_14.html"
+DATA_FILE = "../data/student-2012/SOCO_BA3.html"
 
-first_monday = '20/09/2010'
+first_monday = '19/09/2011'
 
 def make_ical_from_local_file(filename):
     f = open(filename)
@@ -28,9 +26,9 @@ def make_ical_from_local_file(filename):
     write_content_to_file(ical_content, "%s.ics" % cal.description)
 
 
-URLs = [("MA1 en sciences informatiques - Spécialisée - Multimedia", "http://164.15.72.157:8080/Reporting/Individual;Student%20Set%20Groups;id;%23SPLUS0FACD0?&template=Ann%E9e%20d%27%E9tude&weeks=1-14&days=1-6&periods=5-33&width=0&height=0"),
-        ("BA1 en sciences de l'ingénieur, orientation ingénieur civil - Série 2B", "http://164.15.72.157:8080/Reporting/Individual;Student%20Set%20Groups;id;%23SPLUSA6299F?&template=Ann%E9e%20d%27%E9tude&weeks=1-14&days=1-6&periods=5-33&width=0&height=0"),
-        ("BA3 en information et communication", "http://164.15.72.157:8080/Reporting/Individual;Student%20Set%20Groups;id;%23SPLUS35F074?&template=Ann%E9e%20d%27%E9tude&weeks=1-14&days=1-6&periods=5-33&width=0&height=0"),
+URLs = [("MA1 en sciences informatiques - Spécialisée - Multimedia", "http://164.15.72.157:8081/Reporting/Individual;Student%20Set%20Groups;id;%23SPLUS0FACD0?&template=Ann%E9e%20d%27%E9tude&weeks=1-14&days=1-6&periods=5-33&width=0&height=0"),
+        ("BA1 en sciences de l'ingénieur, orientation ingénieur civil - Série 2B", "http://164.15.72.157:8081/Reporting/Individual;Student%20Set%20Groups;id;%23SPLUSA6299F?&template=Ann%E9e%20d%27%E9tude&weeks=1-14&days=1-6&periods=5-33&width=0&height=0"),
+        ("BA3 en information et communication", "http://164.15.72.157:8081/Reporting/Individual;Student%20Set%20Groups;id;%23SPLUS35F074?&template=Ann%E9e%20d%27%E9tude&weeks=1-14&days=1-6&periods=5-33&width=0&height=0"),
 ]
 
 
@@ -44,7 +42,7 @@ def make_ical_from_url(name, url):
     write_content_to_file(ical_data, outfile)
 
 
-GROUP_IDs = ["%23SPLUS0FACD0", "%23SPLUS0FACD0", "%23SPLUSA6299D", "%23SPLUS35F0CB", "%23SPLUS35F0CA"]
+GROUP_IDs = ["%23SPLUS0FACD0", "%23SPLUSA6299D", "%23SPLUS35F0CB", "%23SPLUS35F0CA", "%23SPLUS4BCCBA"]
 
 def make_ical_from_groupid(group_id):
     gehol_proxy = GeholProxy()
@@ -52,6 +50,7 @@ def make_ical_from_groupid(group_id):
     ical = convert_geholcalendar_to_ical(cal, first_monday)
     ical_data = ical.as_string()
     outfile = "%s.ics" % ical.name
+    print "writing ical file : %s" % outfile
     write_content_to_file(ical_data, outfile)
 
 
