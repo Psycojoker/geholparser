@@ -96,7 +96,7 @@ def convert_geholcalendar_to_ical(gehol_calendar, first_monday):
     for event in gehol_calendar.events:
         ical_event = Event()
         # get some common values for the events we will generate next
-        event_summary =  "%s (%s)" % (event['title'], event['type'])
+        event_summary =  "%s (%s) %s" % (event['title'], event['type'], event['group'])
         event_organizer = event['organizer']
         event_location = event['location']
         event_descr = "%s [%s]" % (event_summary, event_organizer)
