@@ -214,7 +214,7 @@ class StudentSetCalendar(BaseCalendar):
 
 
 if __name__=="__main__":
-    name = '../../data/student-2012/SOCO_BA3.html'
+    name = '../../data/student-2012/FSA_BA1.html'
     with open(name) as f:
         html_content = f.read()
         c = StudentSetCalendar(html_content)

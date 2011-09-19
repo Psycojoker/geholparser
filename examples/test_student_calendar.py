@@ -29,6 +29,7 @@ def make_ical_from_local_file(filename):
 URLs = [("MA1 en sciences informatiques - Spécialisée - Multimedia", "http://164.15.72.157:8081/Reporting/Individual;Student%20Set%20Groups;id;%23SPLUS0FACD0?&template=Ann%E9e%20d%27%E9tude&weeks=1-14&days=1-6&periods=5-33&width=0&height=0"),
         ("BA1 en sciences de l'ingénieur, orientation ingénieur civil - Série 2B", "http://164.15.72.157:8081/Reporting/Individual;Student%20Set%20Groups;id;%23SPLUSA6299F?&template=Ann%E9e%20d%27%E9tude&weeks=1-14&days=1-6&periods=5-33&width=0&height=0"),
         ("BA3 en information et communication", "http://164.15.72.157:8081/Reporting/Individual;Student%20Set%20Groups;id;%23SPLUS35F074?&template=Ann%E9e%20d%27%E9tude&weeks=1-14&days=1-6&periods=5-33&width=0&height=0"),
+
 ]
 
 
@@ -42,7 +43,7 @@ def make_ical_from_url(name, url):
     write_content_to_file(ical_data, outfile)
 
 
-GROUP_IDs = ["%23SPLUS0FACD0", "%23SPLUSA6299D", "%23SPLUS35F0CB", "%23SPLUS35F0CA", "%23SPLUS4BCCBA"]
+GROUP_IDs = ["%23SPLUS0FACD0", "%23SPLUSA6299D", "%23SPLUS35F0CB", "%23SPLUS35F0CA", "%23SPLUS4BCCBA", "%23SPLUSA6299B"]
 
 def make_ical_from_groupid(group_id):
     gehol_proxy = GeholProxy()
