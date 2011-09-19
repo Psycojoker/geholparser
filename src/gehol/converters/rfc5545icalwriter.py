@@ -113,7 +113,7 @@ def convert_geholcalendar_to_ical(gehol_calendar, first_monday):
 
         event_summary =  "%s (%s) %s" % (event['title'], event_type_description, event['group'])
         event_organizer = event['organizer']
-        event_location = event['location']
+        event_location = " ".join(event['location'].split(","))
         event_descr = "%s [%s]" % (event_summary, event_organizer)
 
         for (i, event_week) in enumerate(event['weeks']):
