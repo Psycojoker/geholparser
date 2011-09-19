@@ -16,7 +16,7 @@ def test_valid_course(course_mnemo="INFOH500"):
 def test_nonexistent_course():
     course_mnemo = "INFOH999"
     print "Fetching events for non existent course : %s" % course_mnemo
-    gehol_proxy = GeholProxy("164.15.72.157:8080")
+    gehol_proxy = GeholProxy("164.15.72.157:8081")
     try:
         calendar = gehol_proxy.get_course_calendar(course_mnemo)
     except Exception,e:
@@ -25,6 +25,6 @@ def test_nonexistent_course():
 
 
 if __name__=="__main__":
-    test_valid_course()
+    test_valid_course("INFOH410")
     print "-----"
     test_nonexistent_course()
