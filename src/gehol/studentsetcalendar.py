@@ -210,12 +210,3 @@ class StudentSetCalendar(BaseCalendar):
         return slot.table is not None
 
 
-
-
-
-if __name__=="__main__":
-    name = '../../data/student-2012/FSA_BA1.html'
-    with open(name) as f:
-        html_content = f.read()
-        c = StudentSetCalendar(html_content)
-        print c.events

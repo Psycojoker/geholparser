@@ -131,11 +131,3 @@ class CourseCalendar(BaseCalendar):
         return event_list
 
 
-
-if __name__=="__main__":
-    name = '../../data/course-2012/BIMEH404_1_36.html'
-    with open(name) as f:
-        html_content = f.read()
-        c = CourseCalendar(html_content)
-        print c.events
-        
