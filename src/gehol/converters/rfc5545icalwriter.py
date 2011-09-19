@@ -85,6 +85,19 @@ class Calendar(object):
         return ical_string.encode('utf-8')
 
 
+
+TYPE_TO_DESCR = {
+    'THE':u'Theorie',
+    'EXE':u'Exercices'
+}
+
+def convert_type_to_description(type_mnemo):
+    if type_mnemo in TYPE_TO_DESCR:
+        return TYPE_TO_DESCR[type_mnemo]
+    else:
+        return type_mnemo
+
+
 def convert_geholcalendar_to_ical(gehol_calendar, first_monday):
     date_init = datetime.strptime(first_monday,'%d/%m/%Y')
 
@@ -96,7 +109,9 @@ def convert_geholcalendar_to_ical(gehol_calendar, first_monday):
     for event in gehol_calendar.events:
         ical_event = Event()
         # get some common values for the events we will generate next
-        event_summary =  "%s (%s) %s" % (event['title'], event['type'], event['group'])
+        event_type_description = convert_type_to_description(event['type'])
+
+        event_summary =  "%s (%s) %s" % (event['title'], event_type_description, event['group'])
         event_organizer = event['organizer']
         event_location = event['location']
         event_descr = "%s [%s]" % (event_summary, event_organizer)
