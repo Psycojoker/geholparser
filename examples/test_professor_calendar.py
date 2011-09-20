@@ -36,7 +36,7 @@ def make_ical_from_prof_id(prof_id):
 
 
 
-PROF_IDS = [32781, 49171, 55405, 20453]
+PROF_IDS = [32781, 49171, 55405, 20453, 96317, 52485]
 
 
 if __name__ == "__main__":
