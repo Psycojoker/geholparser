@@ -46,13 +46,13 @@ class ProfessorCalendar(BaseCalendar):
 
     @property
     def description(self):
-        descr = u"Schedule for %s" % (self.header_data['teacher_name'])
+        descr = u"Schedule for %s" % (u''.join(self.header_data['teacher_name'].split(',')))
         return descr
 
 
     @property
     def name(self):
-        return  u''.join(self.header_data['teacher_name'].split(','))
+        return  u"ULB - " + u''.join(self.header_data['teacher_name'].split(','))
 
 
     def _load_content_from_soup(self, soup):
