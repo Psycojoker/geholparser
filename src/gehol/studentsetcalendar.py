@@ -6,7 +6,33 @@ __author__ = 'Frederic'
 from datetime import datetime, timedelta
 from BeautifulSoup import BeautifulSoup
 from utils import split_weeks, convert_time, convert_week_number_to_date
-from basecalendar import BaseCalendar
+from basecalendar import BaseCalendar, BaseEvent, convert_type_to_description
+
+
+class StudentSetEvent(BaseEvent):
+    def __init__(self, **kwargs):
+        super(StudentSetEvent, self).__init__(**kwargs)
+        self.type = kwargs['type']
+        self.title = kwargs['title']
+        self.group = kwargs['group']
+
+
+    @property
+    def summary(self):
+        event_type_description = convert_type_to_description(self.type)
+        if self.group:
+            event_summary =  u"%s (%s) [%s]" % (self.title, event_type_description, self.group)
+        else:
+            event_summary =  u"%s (%s)" % (self.title, event_type_description)
+        return event_summary
+
+
+    @property
+    def description(self):
+        return "%s [%s]" % (self.summary, self.organizer)
+
+
+
 
 class StudentSetCalendar(BaseCalendar):
     def __init__(self, markup):
@@ -145,11 +171,13 @@ class StudentSetCalendar(BaseCalendar):
         current_time_idx = 0
         for time_slot in all_day_slots:
             if self._slot_has_event(time_slot):
-                new_event = self._process_event(time_slot,
-                                                hours[current_time_idx],
-                                                num_day)
+                new_event_data = self._process_event(time_slot,
+                                                     hours[current_time_idx],
+                                                     num_day)
+
+                new_event = StudentSetEvent(**new_event_data)
                 events.append(new_event)
-                current_time_idx += new_event['num_timeslots']
+                current_time_idx += new_event_data['num_timeslots']
             else:
                 # This is tricky : in the first row of each day, the first
                 # column (which contains the name of 
