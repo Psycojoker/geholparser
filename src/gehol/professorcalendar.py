@@ -52,7 +52,7 @@ class ProfessorCalendar(BaseCalendar):
 
     @property
     def name(self):
-        return  self.header_data['teacher_name']
+        return  u''.join(self.header_data['teacher_name'].split(','))
 
 
     def _load_content_from_soup(self, soup):
