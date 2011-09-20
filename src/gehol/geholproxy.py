@@ -106,7 +106,7 @@ class GeholProxy(object):
                     + weeks
                     + "&days=1-6&periods=1-30&width=0&height=0")
         return (    "/Reporting/Individual;Staff;id;"
-                    + professor_id
+                    + str(professor_id)
                     + "?"
                     + params)
 
