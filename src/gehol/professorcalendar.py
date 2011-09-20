@@ -8,7 +8,30 @@ __author__ = 'Frederic'
 from datetime import datetime, timedelta
 from BeautifulSoup import BeautifulSoup
 from utils import split_weeks, convert_time, convert_week_number_to_date
-from basecalendar import BaseCalendar
+from basecalendar import BaseCalendar, BaseEvent, convert_type_to_description
+
+
+class ProfessorEvent(BaseEvent):
+    def __init__(self, **kwargs):
+        super(ProfessorEvent, self).__init__(**kwargs)
+        self.type = kwargs['type']
+        self.title = kwargs['title']
+        self.mnemo = kwargs['mnemo']
+
+
+    @property
+    def summary(self):
+        event_type_description = convert_type_to_description(self.type)
+        event_summary =  u"%s: %s (%s)" % (self.mnemo, self.title, event_type_description)
+        return event_summary
+
+
+    @property
+    def description(self):
+        return self.summary
+
+
+
 
 class ProfessorCalendar(BaseCalendar):
     def __init__(self, markup):
@@ -23,7 +46,7 @@ class ProfessorCalendar(BaseCalendar):
 
     @property
     def description(self):
-        descr = "Schedule for %s" % (self.header_data['teacher_name'])
+        descr = u"Schedule for %s" % (self.header_data['teacher_name'])
         return descr
 
 
@@ -150,11 +173,11 @@ class ProfessorCalendar(BaseCalendar):
         current_time_idx = 0
         for time_slot in all_day_slots:
             if self._slot_has_event(time_slot):
-                new_event = self._process_event(time_slot,
+                new_event_data = self._process_event(time_slot,
                                                 hours[current_time_idx],
                                                 num_day)
-                events.append(new_event)
-                current_time_idx += new_event['num_timeslots']
+                events.append(ProfessorEvent(**new_event_data))
+                current_time_idx += new_event_data['num_timeslots']
             else:
                 # This is tricky : in the first row of each day, the first
                 # column (which contains the name of 
@@ -220,4 +243,7 @@ if __name__ == "__main__":
     p = ProfessorCalendar(f)
     print p.name
     print p.description
+    for e in p.events:
+        print e.summary
+
     print p.events
