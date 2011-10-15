@@ -1,0 +1,15 @@
+#!/usr/bin/python
+
+import sys
+import gehol
+import gehol.converters as convert
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print >>sys.stderr, "Cal uri must be the first arg"
+        sys.exit(1)
+
+    proxy = gehol.GeholProxy()
+    cal = proxy.get_studentset_calendar_from_url(sys.argv[1])
+    remind = convert.convert_geholcalendar_to_remind(cal,"19/09/2011")
+    sys.stdout.write(remind.as_string())

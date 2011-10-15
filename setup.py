@@ -13,6 +13,7 @@ setup(name='gehol',
       url=['http://bitbucket.org/odebeir/ulbcalendar2cvs'],
       keywords=['calendar csv'],
       platforms='All',
+      scripts=["gehol2remind"],
       classifiers=[
         "Development Status :: 3 - Alpha",
         "Environment :: Console",
