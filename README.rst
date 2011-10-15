@@ -18,7 +18,8 @@ External Dependencies
 - `BeautifulSoup <http://www.crummy.com/software/BeautifulSoup/>`_
 - `argparse <http://pypi.python.org/pypi/argparse/1.1>`_
 
-
+To install it run ::
+    $ pip install -r requirements.txt
 
 
 Roadmap
