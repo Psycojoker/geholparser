@@ -30,7 +30,7 @@ class Calendar(object):
 
     def as_string(self):
         def write_line(out, line):
-            out.write(line+'\r\n')
+            out.write(line+'\n')
 
         out = StringIO()
 
