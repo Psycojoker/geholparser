@@ -35,7 +35,7 @@ class Calendar(object):
         out = StringIO()
 
         for event in self.events:
-            write_line("REM %s AT %s DURATION %s MSG %s (%s) %s\n" % (event.start.strftime("%b %d %Y"), event.start.strftime("%H:%M")), event.duration.strftime("%H:%M"), event.summary, event.location)
+            write_line(out, "REM %s AT %s DURATION %s MSG %s (%s)\\\n" % (str(event.start.strftime("%b %d %Y")), str(event.start.strftime("%H:%M"))), str(event.duration.strftime("%H:%M")), str(event.summary), str(event.location))
 
         ical_string = out.getvalue()
         out.close()
@@ -60,7 +60,8 @@ def convert_geholcalendar_to_remind(gehol_calendar, first_monday):
             start = date_init+delta + timedelta(hours = event.start_time.hour,
                                                   minutes = event.start_time.minute)
             duration = timedelta(hours = event.stop_time.hour,
-                                  minutes = event.stop_time.minute) - start
+                                  minutes = event.stop_time.minute) -  timedelta(hours = event.start_time.hour,
+                                                  minutes = event.start_time.minute) 
 
             remind_event = Event()
             remind_event.summary = event.summary
