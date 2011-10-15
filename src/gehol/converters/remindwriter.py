@@ -35,7 +35,7 @@ class Calendar(object):
         out = StringIO()
 
         for event in self.events:
-            write_line(out, "REM %s AT %s DURATION %s MSG %s (%s)" % (str(event.start.strftime("%b %d %Y")), str(event.start.strftime("%H:%M"))), str(event.duration.strftime("%H:%M")), str(event.summary), str(event.location))
+            write_line(out, "REM %s AT %s DURATION %s MSG %s (%s)" % (str(event.start.strftime("%b %d %Y")), str(event.start.strftime("%H:%M")), str(event.duration.strftime("%H:%M")), str(event.summary), str(event.location)))
 
         ical_string = out.getvalue()
         out.close()
