@@ -34,8 +34,21 @@ class Calendar(object):
 
         out = StringIO()
 
+        def dirty_fix(duration):
+            def total_seconds(td):
+                return (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10**6) / 10**6
+            seconds = total_seconds(duration)
+            hours = seconds / 60 / 60
+            minutes = seconds / 60 % 60
+            return "%02i:%02i" % (hours, minutes)
+
         for event in self.events:
-            write_line(out, "REM %s AT %s DURATION %s MSG %s (%s)" % (str(event.start.strftime("%b %d %Y")), str(event.start.strftime("%H:%M")), str(event.duration.strftime("%H:%M")), str(event.summary), str(event.location)))
+            write_line(out, "REM %s AT %s DURATION %s MSG %s (%s)" %
+                       (str(event.start.strftime("%b %d %Y")),
+                        str(event.start.strftime("%H:%M")),
+                       str(dirty_fix(event.duration)),
+                       str(event.summary),
+                       str(event.location)))
 
         ical_string = out.getvalue()
         out.close()
