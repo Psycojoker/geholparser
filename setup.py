@@ -8,7 +8,7 @@ setup(name='gehol',
       package_dir={'': 'src'},
       packages=['gehol', 'gehol.converters'],
       version=gehol.__version__,
-      
+
       #PyPI metadata
       url=['http://bitbucket.org/odebeir/ulbcalendar2cvs'],
       keywords=['calendar csv'],
