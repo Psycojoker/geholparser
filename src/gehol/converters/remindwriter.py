@@ -73,8 +73,7 @@ def convert_geholcalendar_to_remind(gehol_calendar, first_monday):
             start = date_init+delta + timedelta(hours = event.start_time.hour,
                                                   minutes = event.start_time.minute)
             duration = timedelta(hours = event.stop_time.hour,
-                                  minutes = event.stop_time.minute) -  timedelta(hours = event.start_time.hour,
-                                                  minutes = event.start_time.minute) 
+                                  minutes = event.stop_time.minute) -  timedelta(hours = event.start_time.hour, minutes = event.start_time.minute)
 
             remind_event = Event()
             remind_event.summary = event.summary
