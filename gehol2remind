@@ -6,7 +6,7 @@ import gehol.converters as convert
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print >>sys.stderr, "Cal uri must be the first arg"
+        print >>sys.stderr, "Cal uri must be the first arg, go get it here: http://scientia-web.ulb.ac.be/gehol_20112012/horaire_anet.php"
         sys.exit(1)
 
     proxy = gehol.GeholProxy()
