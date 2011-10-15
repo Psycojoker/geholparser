@@ -47,13 +47,13 @@ class Calendar(object):
                        (str(event.start.strftime("%b %d %Y")),
                         str(event.start.strftime("%H:%M")),
                        str(dirty_fix(event.duration)),
-                       str(event.summary),
+                       str(event.summary.encode("Utf-8")),
                        str(event.location)))
 
         ical_string = out.getvalue()
         out.close()
 
-        return ical_string.encode('utf-8')
+        return ical_string
 
 
 
